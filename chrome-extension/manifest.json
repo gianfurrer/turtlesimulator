@@ -1,0 +1,25 @@
+ {
+    "name": "Turtle Simulator",
+    "description" : "Simulates computercraft turtles",
+    "version": "1.0",
+    "manifest_version": 2,
+    "permissions": ["*://www.lua.org/*"],
+    "browser_action": {
+      "title": "Turtle Simulator"
+    },
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
+    "commands": {
+      "_execute_browser_action": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+F",
+          "mac": "MacCtrl+Shift+F"
+        },
+        "description": "Opens extension page"
+      }
+    }
+  }

@@ -1,0 +1,11 @@
+html {
+    min-width: 800px;
+}
+
+body {
+    padding-top: 3rem;
+}
+
+title {
+    display: inline-block
+}
