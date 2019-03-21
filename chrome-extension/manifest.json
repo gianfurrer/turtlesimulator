@@ -21,5 +21,8 @@
         },
         "description": "Opens extension page"
       }
-    }
+    },
+    "web_accessible_resources": [
+      "simulator.lua"
+    ]
   }
