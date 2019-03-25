@@ -3,7 +3,7 @@
     "description" : "Simulates computercraft turtles",
     "version": "1.0",
     "manifest_version": 2,
-    "permissions": ["*://www.lua.org/*"],
+    "permissions": ["*://rextester.com/*"],
     "browser_action": {
       "title": "Turtle Simulator"
     },
@@ -23,6 +23,6 @@
       }
     },
     "web_accessible_resources": [
-      "*.lua"
+      "simulator.lua"
     ]
   }
