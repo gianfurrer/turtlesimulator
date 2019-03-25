@@ -1,11 +1,9 @@
-Object.defineProperty(document, "referrer", {get : function(){ return "https://www.tutorialspoint.com/execute_lua_online.php"; }});
-
 const runLua = (code, callback) => {
     const body = new FormData();
     body.append("LanguageChoiceWrapper", "14");
     body.append("EditorChoiceWrapper", "1");
     body.append("LayoutChoiceWrapper", "1");
-    body.append("Program", "--lua 5.3\n\n"+code);
+    body.append("Program", code);
     body.append("Input", "");
     body.append("Privacy", "");
     body.append("PrivacyUsers", "");
@@ -19,7 +17,7 @@ const runLua = (code, callback) => {
     body.append("IsLive", "False");
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
-    if (this.readyState == 4) {
+    if (this.readyState == XMLHttpRequest.DONE) {
         if (this.status == 200) {
             //const httpResponse = document.createElement("html")
             //httpResponse.innerHTML = this.responseText
@@ -32,15 +30,10 @@ const runLua = (code, callback) => {
     xhttp.send(body);
 }
 
-// Removable Example Usages
-runLua("print('inline lamda call')", result => {
-  console.log(result)
-});
-
 function mergeCode(callback) {
     getFileContent("simulator.lua", (simulatorCode) => {
-        userCode = document.querySelector("#input").textContent;
-        callback(simulatorCode + userCode);
+        userCode = document.querySelector("#input").value;
+        callback(simulatorCode + "\n" + userCode);
     });
 }
 
@@ -58,7 +51,7 @@ function getFileContent(fileName, callback) {
 function execute() {
     mergeCode((code) => {
         runLua(code, (result) => {
-            document.querySelector("output").textContent = result;
+            document.querySelector("#output").value = result;
         });
     });
 }
