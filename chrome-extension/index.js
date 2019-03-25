@@ -18,7 +18,7 @@ function mergeCode(callback) {
     getFileContent("simulator.lua", (simulatorCode) => {
         userCode = document.querySelector("#input").textContent;
         callback(simulatorCode + userCode);
-    })
+    });
 }
 
 function getFileContent(fileName, callback) {
@@ -28,18 +28,18 @@ function getFileContent(fileName, callback) {
             callback(this.responseText);
         }
     };
-    xhttp.open("GET", chrome.runtime.getURL(fileName), true)
-    xhttp.send()
+    xhttp.open("GET", chrome.runtime.getURL(fileName), true);
+    xhttp.send();
 }
 
 function execute() {
     mergeCode((code) => {
         runLua(code, (result) => {
-            document.querySelector("output").textContent = result
-        })
-    })
+            document.querySelector("output").textContent = result;
+        });
+    });
 }
 
 onload = () => {
-    document.querySelector("#btn-execute").onclick = execute
+    document.querySelector("#btn-execute").onclick = execute;
 }
