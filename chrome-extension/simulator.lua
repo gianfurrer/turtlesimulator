@@ -153,7 +153,7 @@ if not turtle then
         turtle.detectUp = function ()
             local x, y, z = getPositionAbove()
             local success, name = getBlockAtPosition(x, y, z)
-            if not success or not name ~= "" then
+            if not success or not name ~= "minecraft:air" then
                 return true
             end
             return false
@@ -161,7 +161,7 @@ if not turtle then
         turtle.detectDown = function ()
             local x, y, z = getPositionBeneath()
             local success, name = getBlockAtPosition(x, y, z)
-            if not success or name ~= "" then
+            if not success or name ~= "minecraft:air" then
                 return true 
             end
             return false

@@ -15,8 +15,8 @@ function runLua(code, callback) {
 }
 
 function mergeCode(callback) {
-    getFileContent("simulator.lua", function (simulatorCode) {
-        userCode = document.getElementById("input").innerText;
+    getFileContent("simulator.lua", (simulatorCode) => {
+        userCode = document.querySelector("#input").textContent;
         callback(simulatorCode + userCode);
     })
 }
@@ -33,13 +33,13 @@ function getFileContent(fileName, callback) {
 }
 
 function execute() {
-    mergeCode(function (code) {
-        runLua(code, function (result) {
-            document.getElementById("output").innerText = result
+    mergeCode((code) => {
+        runLua(code, (result) => {
+            document.querySelector("output").textContent = result
         })
     })
 }
 
-onload = function () {
+onload = () => {
     document.querySelector("#btn-execute").onclick = execute
 }
