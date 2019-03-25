@@ -112,7 +112,7 @@ if not turtle then
                 return false 
             end
             addItemToInventory(data.name)
-            local x, y, z = getPositionInFront()
+            local x, y, z = getCoordinatesInFront()
             addBlock("minecraft:air", x, y, z)
             return true
         end
@@ -123,7 +123,7 @@ if not turtle then
                 return false 
             end
             addItemToInventory(data.name)
-            local x, y, z = getPositionAbove()
+            local x, y, z = getCoordinatesAbove()
             addBlock("minecraft:air", x, y, z)
             return true
         end
@@ -134,7 +134,7 @@ if not turtle then
                 return false 
             end
             addItemToInventory(data.name)
-            local x, y, z = getPositionBeneath()
+            local x, y, z = getCoordinatesBeneath()
             addBlock("minecraft:air", x, y, z)
             return true
         end
@@ -143,65 +143,32 @@ if not turtle then
     -- detect functions
     do
         turtle.detect = function () 
-            local x, y, z = getPositionInFront()
-            local success, name = getBlockAtPosition(x, y, z)
-            if not success or name ~= "minecraft:air" then 
-                return true 
-            end
-            return false
+            local success, data = turtle.inspect()
+            return success
         end
         turtle.detectUp = function ()
-            local x, y, z = getPositionAbove()
-            local success, name = getBlockAtPosition(x, y, z)
-            if not success or not name ~= "minecraft:air" then
-                return true
-            end
-            return false
+            local success, data = turtle.inspectUp()
+            return success
         end
         turtle.detectDown = function ()
-            local x, y, z = getPositionBeneath()
-            local success, name = getBlockAtPosition(x, y, z)
-            if not success or name ~= "minecraft:air" then
-                return true 
-            end
-            return false
+            local success, data = turtle.inspectDown()
+            return success
         end
     end
 
     -- inspect functions
     do
         turtle.inspect = function ()
-            local x, y, z = getPositionInFront()
-            local success, name = getBlockAtPosition(x, y, z)
-            if not success then
-                return true, { name = defaultBlock }
-            end
-            if name ~= "minecraft:air" then
-                return true, { name = name }
-            end
-            return false
+            local x, y, z = getCoordinatesInFront()
+            return getBlockAtCoordinates(x, y, z)
         end
         turtle.inspectUp = function ()
-            local x, y, z = getPositionAbove()
-            local success, name = getBlockAtPosition(x, y, z)
-            if not success then
-                return true, { name = defaultBlock }
-            end
-            if name ~= "minecraft:air" then
-                return true, { name = name }
-            end
-            return false
+            local x, y, z = getCoordinatesAbove()
+            return getBlockAtCoordinates(x, y, z)
         end
         turtle.inspectDown = function () 
-            local x, y, z = getPositionBeneath()
-            local success, name = getBlockAtPosition(x, y, z)
-            if not success then
-                return true, { name = defaultBlock }
-            end
-            if name ~= "minecraft:air" then
-                return true, { name = name }
-            end
-            return false
+            local x, y, z = getCoordinatesBeneath()
+            return getBlockAtCoordinates(x, y, z)
         end
     end
 
@@ -209,19 +176,19 @@ if not turtle then
     do
         turtle.place = function ()
             if not turtle.detect() or turtle.getItemCount() == 0 then return false end
-            local x, y, z = getPositionInFront()
+            local x, y, z = getCoordinatesInFront()
             addBlock(turtle.getItemDetail().name, x, y, z)
             return true
         end
         turtle.placeUp = function ()
             if not turtle.detectUp() or turtle.getItemCount() == 0 then return false end
-            local x, y, z = getPositionAbove()
+            local x, y, z = getCoordinatesAbove()
             addBlock(turtle.getItemDetail().name, x, y, z)
             return true
         end
         turtle.placeDown = function ()
             if not turtle.detectDown() or turtle.getItemCount() == 0 then return false end
-            local x, y, z = getPositionBeneath()
+            local x, y, z = getCoordinatesBeneath()
             addBlock(turtle.getItemDetail().name, x, y, z)
             return true
         end
@@ -261,10 +228,10 @@ if not turtle then
             for i = 1, #blocks do
                 local block = blocks[i]
                 if block.x == x and block.y == y and block.z == z then
-                    return true, block.name
+                    return block.name ~= "minecraft:air", block.name
                 end
             end
-            return false
+            return true, defaultBlock
         end
 
         function addItemToInventory(name) 
@@ -386,6 +353,25 @@ if not turtle then
             end
 
             turnToDirection(currentDirection, direction)
+        end
+    end
+
+    do
+        local ores = { { name = "minecraft:diamond_ore", minVains = 1, maxVains = 1, minPerVain = 3, maxPerVain = 8, minLayer = 5, maxLayer = 20 } }
+
+        for o = 1, #ores do
+            local ore = ores[o]
+            local vains = math.random(ore.minVains, ore.maxVains)
+            for v = 1, vains do
+                local blocks = math.random(ore.minPerVain, ore.maxPerVain)
+                local x = math.random(0, 15)
+                local y = math.random(ore.minLayer, ore.maxLayer)
+                local z = math.random(0, 15)
+                addBlock(ore.name, x, y, z)
+                for b = 1, blocks - 1 do
+
+                end
+            end
         end
     end
 end

@@ -1,40 +1,32 @@
-const runLua = (code, callback) => {
+
+let simulatorCode;
+
+getFileContent("simulator.lua", (content) => {
+    simulatorCode = content;
+})
+
+function runLua (program, callback) {
     const body = new FormData();
     body.append("LanguageChoiceWrapper", "14");
-    body.append("EditorChoiceWrapper", "1");
-    body.append("LayoutChoiceWrapper", "1");
-    body.append("Program", code);
-    body.append("Input", "");
-    body.append("Privacy", "");
-    body.append("PrivacyUsers", "");
-    body.append("Title", "");
-    body.append("SavedOutput", "");
-    body.append("WholeError", "");
-    body.append("WholeWarning", "");
-    body.append("StatsToSave", "");
-    body.append("CodeGuid", "");
-    body.append("IsInEditMode", "False");
-    body.append("IsLive", "False");
+    body.append("Program", program);
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (this.readyState == XMLHttpRequest.DONE) {
         if (this.status == 200) {
-            //const httpResponse = document.createElement("html")
-            //httpResponse.innerHTML = this.responseText
-            //httpResponse.querySelector("span").remove();
             callback(JSON.parse(this.responseText).Result);
         }
-    }
-    };
+    }};
     xhttp.open("POST", "https://rextester.com/rundotnet/Run", true);
     xhttp.send(body);
 }
 
-function mergeCode(callback) {
-    getFileContent("simulator.lua", (simulatorCode) => {
-        userCode = document.querySelector("#input").value;
-        callback(simulatorCode + "\n" + userCode);
-    });
+function getProgram() {
+    return simulatorCode + "\n" + document.querySelector("#input").value;
+}
+
+function getArgs() {
+    const args = document.querySelector("#args").value
+    return args.match(/(?<=(['"])\b)(?:(?!\1|\\).|\\.)*(?=\1)|(\w+)/g);
 }
 
 function getFileContent(fileName, callback) {
@@ -48,14 +40,14 @@ function getFileContent(fileName, callback) {
     xhttp.send();
 }
 
-function execute() {
-    mergeCode((code) => {
-        runLua(code, (result) => {
-            document.querySelector("#output").value = result;
-        });
+function executeProgram() {
+    const args = getArgs()
+    const program = getProgram()
+    runLua(program, (result) => {
+        document.querySelector("#output").value = result;
     });
 }
 
 onload = () => {
-    document.querySelector("#btn-execute").onclick = execute;
+    document.querySelector("#btn-execute").onclick = executeProgram;
 }
