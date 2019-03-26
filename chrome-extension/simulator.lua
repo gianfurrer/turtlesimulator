@@ -28,39 +28,61 @@ if not turtle then
 
     -- inventory functions 
     do 
-        turtle.getSelectedSlot = function () return selectedSlot end
-        turtle.select = function (slot) selectedSlot = slot end
+        turtle.getSelectedSlot = function ()
+             print("[getSelectedSlot] " .. selectedSlot)
+             return selectedSlot 
+        end
+        turtle.select = function (slot)
+            if slot < 1 or slot > 16 then
+                print("[select] " .. slot .. " " .. tostring(false))
+                return false
+            end
+            selectedSlot = slot 
+            print("[select] " .. slot .. " " .. tostring(true))
+            return true
+        end
         turtle.getItemCount = function (slot) 
             slot = slot or turtle.getSelectedSlot()
-            return inventory[slot].count
+            local count = inventory[slot].count
+            print("[getItemCount] " .. slot .. " " .. count)
+            return count
         end
         turtle.getItemDetail = function (slot)
             slot = slot or turtle.getSelectedSlot()
-            return { name = inventory[slot].name, count = inventory[slot].count }
+            local name, count = inventory[slot].name, inventory[slot].count
+            print("[getItemDetail] " .. slot .. " " .. name .. " " .. count)
+            return { name = name, count = count }
         end
     end
 
     -- fuel functions
     do
-        turtle.getFuelLevel = function () return fuelLevel end
-        turtle.getFuelLimit = function () return fuelLimit end
+        turtle.getFuelLevel = function () 
+            print("[getFuelLevel] " .. fuelLevel)
+            return fuelLevel 
+        end
+        turtle.getFuelLimit = function () 
+            print("[getFuelLimit] " .. fuelLimit)
+            return fuelLimit 
+        end
         turtle.refuel = function (quantity)
+            quantity = quantity or turtle.getItemCount()
             local name = inventory[turtle.getSelectedSlot()].name
             if not fuelItems[name] then
+                print("[refuel] " .. quantity .. " " .. tostring(false))
                 return false
             end
 
-            quantity = quantity or turtle.getItemCount()
             if quantity > turtle.getItemCount() then
                 quantity = turtle.getItemCount()
             end
-
             
             inventory[turtle.getSelectedSlot()].count = inventory[turtle.getSelectedSlot()].count - quantity
             fuelLevel = fuelLevel + (quantity * fuelItems[name])
             if turtle.getFuelLevel() > turtle.getFuelLimit() then 
                 fuelLevel = fuelLimit
             end
+            print("[refuel] " .. quantity .. " " .. tostring(true))
             return true
         end
     end
@@ -68,15 +90,15 @@ if not turtle then
     -- movement functions
     do
         turtle.forward = function () 
-            print('forward') 
             if fuelLevel < 1 then 
                 error("No fuel") 
             end  
             fuelLevel = fuelLevel - 1 
-            return not turtle.detect()
+            success = not turtle.detect()
+            print("[forward] " .. tostring(success))
+            return success
         end
-        turtle.back = function () 
-            print('back') 
+        turtle.back = function ()  
             if fuelLevel < 1 then 
                 error("No fuel") 
             end 
@@ -84,58 +106,69 @@ if not turtle then
             return true 
         end
         turtle.up = function () 
-            print('up') 
             if fuelLevel < 1 then 
                 error("No fuel") 
             end 
             fuelLevel = fuelLevel - 1 
-            return not turtle.detectUp() 
+            success = not turtle.detectUp()
+            print("[up] " .. tostring(success))
+            return success
         end
         turtle.down = function ()
-            print('down') 
             if fuelLevel < 1 then 
                 error("No fuel") 
             end 
             fuelLevel = fuelLevel - 1 
-            return not turtle.detectDown() 
+            success = not turtle.detectDown()
+            print("[down] " .. tostring(success))
+            return success
         end
-        turtle.turnLeft = function () print('turn left') return true end
-        turtle.turnRight = function () print('turn right') return true end
+        turtle.turnLeft = function () 
+            print("[turnLeft] " .. tostring(true))
+            return true 
+        end
+        turtle.turnRight = function () 
+            print("[turnRight] " .. tostring(true))
+            return true 
+        end
     end
 
     -- dig functions
     do 
         turtle.dig = function () 
-            print('dig')
             local success, data = turtle.inspect()
-            if not success then 
+            if not success then
+                print("[dig] " .. tostring(false))
                 return false 
             end
             addItemToInventory(data.name)
             local x, y, z = getCoordinatesInFront()
             addBlock("minecraft:air", x, y, z)
+            print("[dig] " .. tostring(true))
             return true
         end
         turtle.digUp = function () 
-            print('dig up')
             local success, data = turtle.inspectUp()
-            if not success then 
+            if not success then
+                print("[digUp] " .. tostring(false))
                 return false 
             end
             addItemToInventory(data.name)
             local x, y, z = getCoordinatesAbove()
             addBlock("minecraft:air", x, y, z)
+            print("[digUp] " .. tostring(true))
             return true
         end
         turtle.digDown = function () 
-            print('dig down')
             local success, data = turtle.inspectDown()
             if not success then 
+                print("[digDown] " .. tostring(false))
                 return false 
             end
             addItemToInventory(data.name)
             local x, y, z = getCoordinatesBeneath()
             addBlock("minecraft:air", x, y, z)
+            print("[digDown] " .. tostring(true))
             return true
         end
     end
@@ -144,14 +177,17 @@ if not turtle then
     do
         turtle.detect = function () 
             local success, data = turtle.inspect()
+            print("[detect] " .. tostring(success))
             return success
         end
         turtle.detectUp = function ()
             local success, data = turtle.inspectUp()
+            print("[detectUp] " .. tostring(success))
             return success
         end
         turtle.detectDown = function ()
             local success, data = turtle.inspectDown()
+            print("[detectDown] " .. tostring(success))
             return success
         end
     end
@@ -160,36 +196,57 @@ if not turtle then
     do
         turtle.inspect = function ()
             local x, y, z = getCoordinatesInFront()
-            return getBlockAtCoordinates(x, y, z)
+            local success, name = getBlockAtCoordinates(x, y, z)
+            print("[inspect] " .. tostring(success) .. " " .. name)
+            return success, { name = name }
         end
         turtle.inspectUp = function ()
             local x, y, z = getCoordinatesAbove()
-            return getBlockAtCoordinates(x, y, z)
+            local success, name = getBlockAtCoordinates(x, y, z)
+            print("[inspectUp] " .. tostring(success) .. " " .. name)
+            return success, { name = name }
         end
         turtle.inspectDown = function () 
             local x, y, z = getCoordinatesBeneath()
-            return getBlockAtCoordinates(x, y, z)
+            local success, name = getBlockAtCoordinates(x, y, z)
+            print("[inspectDown] " .. tostring(success) .. " " .. name)
+            return success, { name = name }
         end
     end
 
     -- place functions
     do
         turtle.place = function ()
-            if not turtle.detect() or turtle.getItemCount() == 0 then return false end
+            if not turtle.detect() or turtle.getItemCount() == 0 then 
+                print("[place] " .. tostring(false))
+                return false
+            end
             local x, y, z = getCoordinatesInFront()
             addBlock(turtle.getItemDetail().name, x, y, z)
+            inventory.slot[turtle.getSelectedSlot()].count = inventory.slot[turtle.getSelectedSlot()].count - 1
+            print("[place] " .. tostring(true))
             return true
         end
         turtle.placeUp = function ()
-            if not turtle.detectUp() or turtle.getItemCount() == 0 then return false end
+            if not turtle.detectUp() or turtle.getItemCount() == 0 then 
+                print("[placeUp] " .. tostring(false))
+                return false
+            end
             local x, y, z = getCoordinatesAbove()
             addBlock(turtle.getItemDetail().name, x, y, z)
+            inventory.slot[turtle.getSelectedSlot()].count = inventory.slot[turtle.getSelectedSlot()].count - 1
+            print("[placeUp] " .. tostring(true))
             return true
         end
         turtle.placeDown = function ()
-            if not turtle.detectDown() or turtle.getItemCount() == 0 then return false end
+            if not turtle.detectDown() or turtle.getItemCount() == 0 then 
+                print("[placeDown] " .. tostring(false))
+                return false
+            end
             local x, y, z = getCoordinatesBeneath()
             addBlock(turtle.getItemDetail().name, x, y, z)
+            inventory.slot[turtle.getSelectedSlot()].count = inventory.slot[turtle.getSelectedSlot()].count - 1
+            print("[placeDown] " .. tostring(true))
             return true
         end
     end
@@ -202,6 +259,7 @@ if not turtle then
                 count = turtle.getItemCount()
             end
             inventory[turtle.getSelectedSlot()].count = inventory[turtle.getSelectedSlot()].count - count
+            print("[drop] " .. count .. " " .. tostring(true))
             return true
         end
         turtle.dropUp = function (count) 
@@ -222,29 +280,39 @@ if not turtle then
                 end
             end
             table.insert(blocks, { name = name, x = x, y = y, z = z })
+            print("[addBlock] " .. name .. " " .. x .. " " .. y .. " " .. z)
         end
 
         function getBlockAtCoordinates(x, y, z)
             for i = 1, #blocks do
                 local block = blocks[i]
                 if block.x == x and block.y == y and block.z == z then
+                    print("[getBlockAtCoordinates] " .. x .. " " .. y .. " " .. z .. " " .. tostring(block.name ~= "minecraft:air") .. " " .. block.name)
                     return block.name ~= "minecraft:air", block.name
                 end
             end
+            print("[getBlockAtCoordinates] " .. x .. " " .. y .. " " .. z .. " " .. tostring(true) .. " ".. defaultBlock)
             return true, defaultBlock
         end
 
         function addItemToInventory(name) 
             for i = 1, 16 do
+                if turtle.getItemCount(i) < 64 and inventory[i].name == name then
+                    inventory[i].count = inventory[i].count + 1
+                    print("[addItemToInventory] " .. name .. " " .. tostring(true) .. " " ..i)
+                    return true
+                end
+            end
+            for i = 1, 16 do
                 if turtle.getItemCount(i) == 0 then
                     inventory[i].name = name
                     inventory[i].count = 1
-                    return
-                elseif turtle.getItemCount(i) < 64 and inventory[i].name == name then
-                    inventory[i].count = inventory[i].count + 1
-                    return
+                    print("[addItemToInventory] " .. name .. " " .. tostring(true) .. " " .. i)
+                    return true
                 end
             end
+            print("[addItemToInventory] " .. name .. " " .. tostring(false))
+            return false
         end
     end
 
