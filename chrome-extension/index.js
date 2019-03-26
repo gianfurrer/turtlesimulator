@@ -13,11 +13,20 @@ function runLua (program, callback) {
     xhttp.onreadystatechange = function() {
     if (this.readyState == XMLHttpRequest.DONE) {
         if (this.status == 200) {
-            callback(JSON.parse(this.responseText).Result);
+            callback(JSON.parse(this.responseText));
         }
     }};
     xhttp.open("POST", "https://rextester.com/rundotnet/Run", true);
     xhttp.send(body);
+}
+
+function getProgram(args) {
+    let argCode = ""
+    for (let i = 0; i < args.length; i++) {
+        argCode += `arg[${i + 1}] = "${args[i]}"\n`
+    }
+
+    return argCode + "\n" + getProgram()
 }
 
 function getProgram() {
@@ -42,12 +51,34 @@ function getFileContent(fileName, callback) {
 
 function executeProgram() {
     const args = getArgs()
-    const program = getProgram()
-    runLua(program, (result) => {
-        document.querySelector("#output").value = result;
+    const program = getProgram(args)
+    runLua(program, (response) => {
+        document.querySelector("#output").value = response.Result;
     });
+}
+
+function generateInventory(slots) {
+    const inventory = document.querySelector("#inventory");
+    for (let i = 0; i < slots; i++) {
+        const inventorySlot = document.createElement("div")
+        inventorySlot.setAttribute("id", `inventory-slot-${i}`)
+
+        const slotName = document.createElement("input")
+        slotName.setAttribute("type", "text")
+        
+        const slotCount = document.createElement("input")
+        slotCount.setAttribute("type", "number")
+        slotCount.setAttribute("min", "0")
+        slotCount.setAttribute("max", "64")
+        slotCount.value = 0
+
+        inventorySlot.appendChild(slotName)
+        inventorySlot.appendChild(slotCount)
+        inventory.appendChild(inventorySlot)
+    }
 }
 
 onload = () => {
     document.querySelector("#btn-execute").onclick = executeProgram;
+    generateInventory(16)
 }

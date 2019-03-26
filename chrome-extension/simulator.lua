@@ -355,23 +355,4 @@ if not turtle then
             turnToDirection(currentDirection, direction)
         end
     end
-
-    do
-        local ores = { { name = "minecraft:diamond_ore", minVains = 1, maxVains = 1, minPerVain = 3, maxPerVain = 8, minLayer = 5, maxLayer = 20 } }
-
-        for o = 1, #ores do
-            local ore = ores[o]
-            local vains = math.random(ore.minVains, ore.maxVains)
-            for v = 1, vains do
-                local blocks = math.random(ore.minPerVain, ore.maxPerVain)
-                local x = math.random(0, 15)
-                local y = math.random(ore.minLayer, ore.maxLayer)
-                local z = math.random(0, 15)
-                addBlock(ore.name, x, y, z)
-                for b = 1, blocks - 1 do
-
-                end
-            end
-        end
-    end
 end
