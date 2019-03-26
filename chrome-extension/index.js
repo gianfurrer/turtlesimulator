@@ -22,15 +22,13 @@ function runLua (program, callback) {
 
 function getProgram(args) {
     let argCode = ""
-    for (let i = 0; i < args.length; i++) {
-        argCode += `arg[${i + 1}] = "${args[i]}"\n`
+    if (args) {
+        for (let i = 0; i < args.length; i++) {
+            argCode += `arg[${i + 1}] = "${args[i]}"\n`
+        }
     }
 
-    return argCode + "\n" + getProgram()
-}
-
-function getProgram() {
-    return simulatorCode + "\n" + getInventoryCode() + "\n" + document.querySelector("#input").value;
+    return argCode + "\n" + simulatorCode + "\n" + getInventoryCode() + "\n" + document.querySelector("#input").value;
 }
 
 function getArgs() {
@@ -65,6 +63,8 @@ function executeProgram() {
     const program = getProgram(args)
     runLua(program, (response) => {
         document.querySelector("#output").value = response.Result;
+        document.querySelector("#errors").value = response.Errors;
+        document.querySelector("#warnings").value = response.Warnings;
     });
 }
 
