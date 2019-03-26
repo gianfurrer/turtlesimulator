@@ -76,12 +76,13 @@ function generateInventory(slots) {
 
         const slotName = document.createElement("input")
         slotName.setAttribute("type", "text")
+        if (i == 0) { slotName.value = "minecraft:coal_block" }
         
         const slotCount = document.createElement("input")
         slotCount.setAttribute("type", "number")
         slotCount.setAttribute("min", "0")
         slotCount.setAttribute("max", "64")
-        slotCount.value = 0
+        i == 0 ? slotCount.value = 64 : slotCount.value = 0
 
         inventorySlot.appendChild(slotName)
         inventorySlot.appendChild(slotCount)

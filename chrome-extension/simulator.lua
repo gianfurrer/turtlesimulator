@@ -3,6 +3,7 @@ if not turtle then
     turtle = {}
 
     blocks = {}
+
     local defaultBlock = "minecraft:cobblestone"
 
     inventory = { { name = "minecraft:coal_block", count = 64 }, { name = "minecraft:coal_block", count = 64 },
@@ -26,6 +27,12 @@ if not turtle then
     local fuelLimit = 20000
     local selectedSlot = 1
 
+
+    function setFuelLevel(value)
+        fuelLevel = value
+        print("[setFuelLevel] " .. fuelLevel)
+    end
+
     -- inventory functions 
     do 
         turtle.getSelectedSlot = function ()
@@ -42,13 +49,13 @@ if not turtle then
             return true
         end
         turtle.getItemCount = function (slot) 
-            slot = slot or turtle.getSelectedSlot()
+            slot = slot or selectedSlot
             local count = inventory[slot].count
             print("[getItemCount] " .. slot .. " " .. count)
             return count
         end
         turtle.getItemDetail = function (slot)
-            slot = slot or turtle.getSelectedSlot()
+            slot = slot or selectedSlot
             local name, count = inventory[slot].name, inventory[slot].count
             print("[getItemDetail] " .. slot .. " " .. name .. " " .. count)
             return { name = name, count = count }
@@ -66,21 +73,23 @@ if not turtle then
             return fuelLimit 
         end
         turtle.refuel = function (quantity)
-            quantity = quantity or turtle.getItemCount()
-            local name = inventory[turtle.getSelectedSlot()].name
+            quantity = quantity or inventory[selectedSlot].count
+            local name = inventory[selectedSlot].name
             if not fuelItems[name] then
                 print("[refuel] " .. quantity .. " " .. tostring(false))
                 return false
             end
 
-            if quantity > turtle.getItemCount() then
-                quantity = turtle.getItemCount()
+            if quantity > inventory[selectedSlot].count then
+                quantity = inventory[selectedSlot].count
             end
             
-            inventory[turtle.getSelectedSlot()].count = inventory[turtle.getSelectedSlot()].count - quantity
-            fuelLevel = fuelLevel + (quantity * fuelItems[name])
-            if turtle.getFuelLevel() > turtle.getFuelLimit() then 
-                fuelLevel = fuelLimit
+            turtle.drop(quantity)
+            local fuelLevel = (fuelLevel + (quantity * fuelItems[name]))
+            if fuelLevel > fuelLimit then 
+                setFuelLevel(fuelLimit)
+            else
+                setFuelLevel(fuelLevel)
             end
             print("[refuel] " .. quantity .. " " .. tostring(true))
             return true
@@ -93,7 +102,7 @@ if not turtle then
             if fuelLevel < 1 then 
                 error("No fuel") 
             end  
-            fuelLevel = fuelLevel - 1 
+            setFuelLevel(fuelLevel - 1)
             success = not turtle.detect()
             print("[forward] " .. tostring(success))
             return success
@@ -109,7 +118,7 @@ if not turtle then
             if fuelLevel < 1 then 
                 error("No fuel") 
             end 
-            fuelLevel = fuelLevel - 1 
+            setFuelLevel(fuelLevel - 1)
             success = not turtle.detectUp()
             print("[up] " .. tostring(success))
             return success
@@ -118,7 +127,7 @@ if not turtle then
             if fuelLevel < 1 then 
                 error("No fuel") 
             end 
-            fuelLevel = fuelLevel - 1 
+            setFuelLevel(fuelLevel - 1)
             success = not turtle.detectDown()
             print("[down] " .. tostring(success))
             return success
@@ -141,9 +150,9 @@ if not turtle then
                 print("[dig] " .. tostring(false))
                 return false 
             end
-            addItemToInventory(data.name)
             local x, y, z = getCoordinatesInFront()
             addBlock("minecraft:air", x, y, z)
+            addItemToInventory(data.name)
             print("[dig] " .. tostring(true))
             return true
         end
@@ -156,10 +165,11 @@ if not turtle then
             addItemToInventory(data.name)
             local x, y, z = getCoordinatesAbove()
             addBlock("minecraft:air", x, y, z)
+            addItemToInventory(data.name)
             print("[digUp] " .. tostring(true))
             return true
         end
-        turtle.digDown = function () 
+        turtle.digDown = function ()
             local success, data = turtle.inspectDown()
             if not success then 
                 print("[digDown] " .. tostring(false))
@@ -168,6 +178,7 @@ if not turtle then
             addItemToInventory(data.name)
             local x, y, z = getCoordinatesBeneath()
             addBlock("minecraft:air", x, y, z)
+            addItemToInventory(data.name)
             print("[digDown] " .. tostring(true))
             return true
         end
@@ -217,35 +228,35 @@ if not turtle then
     -- place functions
     do
         turtle.place = function ()
-            if not turtle.detect() or turtle.getItemCount() == 0 then 
+            if turtle.detect() or turtle.getItemCount() == 0 then 
                 print("[place] " .. tostring(false))
                 return false
             end
             local x, y, z = getCoordinatesInFront()
-            addBlock(turtle.getItemDetail().name, x, y, z)
-            inventory.slot[turtle.getSelectedSlot()].count = inventory.slot[turtle.getSelectedSlot()].count - 1
+            addBlock(inventory[selectedSlot].name, x, y, z)
+            inventory[selectedSlot].count = inventory[selectedSlot].count - 1
             print("[place] " .. tostring(true))
             return true
         end
         turtle.placeUp = function ()
-            if not turtle.detectUp() or turtle.getItemCount() == 0 then 
+            if turtle.detectUp() or turtle.getItemCount() == 0 then 
                 print("[placeUp] " .. tostring(false))
                 return false
             end
             local x, y, z = getCoordinatesAbove()
-            addBlock(turtle.getItemDetail().name, x, y, z)
-            inventory.slot[turtle.getSelectedSlot()].count = inventory.slot[turtle.getSelectedSlot()].count - 1
+            addBlock(inventory[selectedSlot].name.name, x, y, z)
+            inventory[selectedSlot].count = inventory[selectedSlot].count - 1
             print("[placeUp] " .. tostring(true))
             return true
         end
         turtle.placeDown = function ()
-            if not turtle.detectDown() or turtle.getItemCount() == 0 then 
+            if turtle.detectDown() or turtle.getItemCount() == 0 then 
                 print("[placeDown] " .. tostring(false))
                 return false
             end
             local x, y, z = getCoordinatesBeneath()
-            addBlock(turtle.getItemDetail().name, x, y, z)
-            inventory.slot[turtle.getSelectedSlot()].count = inventory.slot[turtle.getSelectedSlot()].count - 1
+            addBlock(inventory[selectedSlot].name, x, y, z)
+            inventory[selectedSlot].count = inventory[selectedSlot].count - 1
             print("[placeDown] " .. tostring(true))
             return true
         end
@@ -254,11 +265,10 @@ if not turtle then
     -- drop functions
     do
         turtle.drop = function (count) 
-            count = count or turtle.getItemCount() 
-            if count > turtle.getItemCount() then
-                count = turtle.getItemCount()
+            count = count or inventory[selectedSlot].count 
+            if count > inventory[selectedSlot].count  then
+                count = inventory[selectedSlot].count 
             end
-            inventory[turtle.getSelectedSlot()].count = inventory[turtle.getSelectedSlot()].count - count
             print("[drop] " .. count .. " " .. tostring(true))
             return true
         end
@@ -297,14 +307,14 @@ if not turtle then
 
         function addItemToInventory(name) 
             for i = 1, 16 do
-                if turtle.getItemCount(i) < 64 and inventory[i].name == name then
+                if inventory[i].count < 64 and inventory[i].name == name then
                     inventory[i].count = inventory[i].count + 1
                     print("[addItemToInventory] " .. name .. " " .. tostring(true) .. " " ..i)
                     return true
                 end
             end
             for i = 1, 16 do
-                if turtle.getItemCount(i) == 0 then
+                if inventory[i].count == 0 then
                     inventory[i].name = name
                     inventory[i].count = 1
                     print("[addItemToInventory] " .. name .. " " .. tostring(true) .. " " .. i)
