@@ -33,7 +33,7 @@ function getProgram(args) {
 
 function getArgs() {
     const args = document.querySelector("#args").value
-    return args.match(/(?<=(['"])\b)(?:(?!\1|\\).|\\.)*(?=\1)|(\w+)/g);
+    return args.match(/(?<=(['"]).)(?:(?!\1|\\).|\\.)*(?=\1)|(\w+)/g);
 }
 
 function getInventoryCode() {
