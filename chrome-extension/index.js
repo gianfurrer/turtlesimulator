@@ -30,12 +30,23 @@ function getProgram(args) {
 }
 
 function getProgram() {
-    return simulatorCode + "\n" + document.querySelector("#input").value;
+    return simulatorCode + "\n" + getInventoryCode() + "\n" + document.querySelector("#input").value;
 }
 
 function getArgs() {
     const args = document.querySelector("#args").value
     return args.match(/(?<=(['"])\b)(?:(?!\1|\\).|\\.)*(?=\1)|(\w+)/g);
+}
+
+function getInventoryCode() {
+    let inventoryCode = "inventory = {\n";
+    const inventorySlots = document.querySelector("#inventory").children;
+    for (let i = 0; i < inventorySlots.length; i++) {
+        const slot = inventorySlots[i];
+        inventoryCode += `{ name = "${slot.children[0].value}", count = ${slot.children[1].value} },\n`;
+    }
+    inventoryCode += "}";
+    return inventoryCode;
 }
 
 function getFileContent(fileName, callback) {
