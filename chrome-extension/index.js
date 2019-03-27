@@ -79,11 +79,13 @@ function generateInventory(slots) {
 
         slot.name = document.createElement("input");
         slot.name.type = "text";
+        slot.name.value = "";
 
         slot.count = document.createElement("input");
         slot.count.type = "number";
         slot.count.min = "0";
         slot.count.max = "64";
+        slot.count.value = 0;
 
         inventorySlot.appendChild(slot.name);
         inventorySlot.appendChild(slot.count);
@@ -175,9 +177,16 @@ function removeItemFromInventory(quantity) {
     inventory[selectedSlot - 1].count = inventory[selectedSlot - 1].count - quantity
 }
 
+function initInventory(inv) {
+  for (let i = 0; i < inv.length && inventory[i]; ++i) {
+    inventory[i].name.value = inv[i].name
+    inventory[i].count.value = inv[i].count
+  }
+}
+
+
 onload = () => {
     document.querySelector("#btn-execute").onclick = executeProgram;
     generateInventory(16);
-    inventory[0].name.value = "minecraft:coal_block"
-    inventory[0].count.value = "64"
+    initInventory([{name: "minecraft:coal_block", count: 64}]);
 }
