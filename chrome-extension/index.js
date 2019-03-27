@@ -113,7 +113,7 @@ function simulate(output) {
 
 const directionEnum = { forward: 1, left: 2, back: 3, right: 4 }
 const inventory = []
-let blocks = []
+const blocks = []
 let selectedSlot = 1
 let fuelLevel = 0
 let x = 0
@@ -127,6 +127,7 @@ function setSelectedSlot(slot) {
 
 function setFuelLevel(value) {
     fuelLevel = parseInt(value)
+    document.querySelector("#fuel-level").style.height = fuelLevel / 100 + "px"
 }
 
 function forward() {
@@ -167,15 +168,18 @@ function addBlock(name, x, y, z) {
 
 function addItemToInventory(name, slot) {
     const inventorySlot = inventory[slot - 1];
-    if (inventorySlot.name == "")
+    if (inventorySlot.name.value == "")
     {
-        inventorySlot.name = name
+        inventorySlot.name.value = name
     }
-    inventorySlot.count = parseInt()
+    inventorySlot.count.value = parseInt(inventorySlot.count.value) + 1
 }
 
 function removeItemFromInventory(quantity) {
-    inventory[selectedSlot - 1].count = inventory[selectedSlot - 1].count - quantity
+    inventory[selectedSlot - 1].count.value = parseInt(inventory[selectedSlot - 1].count.value) - parseInt(quantity)
+    if (inventory[selectedSlot - 1].count.value == 0) {
+        inventory[selectedSlot - 1].name.value = ""
+    }
 }
 
 function initInventory(inv) {
