@@ -111,6 +111,7 @@ function simulate() {
 
 const directionEnum = { forward: 1, left: 2, back: 3, right: 4 }
 let inventory = [ { name: "minecraft:coal_block", count: 64 }, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+let blocks = []
 let selectedSlot = 1
 let fuelLevel = 0
 let x = 0
@@ -156,6 +157,23 @@ function turnLeft() {
 function turnRight() {
     if (direction == directionEnum.forward) { direction = direction.right }
     else (direction -= 1)
+}
+
+function addBlock(name, x, y, z) {
+    blocks.push({ name: name, x: x, y: y, z: z })
+}
+
+function addItemToInventory(name, slot) {
+    const inventorySlot = inventory[slot - 1];
+    if (inventorySlot.name == "")
+    { 
+        inventorySlot.name = name
+    }
+    inventorySlot.count = parseInt()
+}
+
+function removeItemFromInventory(quantity) {
+    inventory[selectedSlot - 1].count = inventory[selectedSlot - 1].count - quantity
 }
 
 onload = () => {
