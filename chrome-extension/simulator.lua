@@ -288,47 +288,47 @@ if not turtle then
         return currentX, currentY - 1, currentZ
     end
 
-    function turnToDirection(targetDirection)
-        directionDifference = direction - targetDirection
-        if directionDifference > 0 then 
-            for i = 1, directionDifference do turtle.turnRight() end
-        else
-            for i = directionDifference, -1 do turtle.turnLeft() end
-        end
-    end
+    -- function turnToDirection(targetDirection)
+    --     directionDifference = currentDirection - targetDirection
+    --     if directionDifference > 0 then 
+    --         for i = 1, directionDifference do turtle.turnRight() end
+    --     else
+    --         for i = directionDifference, -1 do turtle.turnLeft() end
+    --     end
+    -- end
 
-    function goToCoordinates(targetX, targetY, targetZ, targetDirection)
-        targetDirection = targetDirection or currentDirection
-        targetX = targetX or 0 targetY = targetY or 0 targetZ = targetZ or 0
-        local differenceX, differenceY, differenceZ = currentX - targetX, currentY - targetY, currentZ - targetZ
+    -- function goToCoordinates(targetX, targetY, targetZ, targetDirection)
+    --     targetDirection = targetDirection or currentDirection
+    --     targetX = targetX or 0 targetY = targetY or 0 targetZ = targetZ or 0
+    --     local differenceX, differenceY, differenceZ = currentX - targetX, currentY - targetY, currentZ - targetZ
 
-        if differenceY > 0 then
-            for i = 1, differenceY do turtle.digDown() turtle.down() end
-        else
-            for i = differenceY, -1 do turtle.digUp() turtle.up() end
-        end
+    --     if differenceY > 0 then
+    --         for i = 1, differenceY do turtle.digDown() turtle.down() end
+    --     else
+    --         for i = differenceY, -1 do turtle.digUp() turtle.up() end
+    --     end
 
-        previousDirection = currentDirection
-        if differenceX > 0 then
-            turnToDirection(directionEnum.left)
-            for i = 1, differenceX do turtle.dig() turtle.forward() end
-            turnToDirection(previousDirection)
-        else
-            turnToDirection(directionEnum.right)
-            for i = differenceX, -1 do turtle.dig() turtle.forward() end
-            turnToDirection(previousDirection)
-        end
+    --     previousDirection = currentDirection
+    --     if differenceX > 0 then
+    --         turnToDirection(directionEnum.left)
+    --         for i = 1, differenceX do turtle.dig() turtle.forward() end
+    --         turnToDirection(previousDirection)
+    --     else
+    --         turnToDirection(directionEnum.right)
+    --         for i = differenceX, -1 do turtle.dig() turtle.forward() end
+    --         turnToDirection(previousDirection)
+    --     end
 
-        if differenceZ > 0 then
-            turnToDirection(directionEnum.back)
-            for i = 1, differenceZ do turtle.dig() turtle.forward() end
-            turnToDirection(previousDirection)
-        else
-            turnToDirection(directionEnum.forward)
-            for i = differenceZ, -1 do turtle.dig() turtle.forward() end
-            turnToDirection(previousDirection)
-        end
+    --     if differenceZ > 0 then
+    --         turnToDirection(directionEnum.back)
+    --         for i = 1, differenceZ do turtle.dig() turtle.forward() end
+    --         turnToDirection(previousDirection)
+    --     else
+    --         turnToDirection(directionEnum.forward)
+    --         for i = differenceZ, -1 do turtle.dig() turtle.forward() end
+    --         turnToDirection(previousDirection)
+    --     end
 
-        turnToDirection(targetDirection)
-    end
+    --     turnToDirection(targetDirection)
+    -- end
 end
