@@ -10,7 +10,7 @@ function runLua (program, callback) {
     body.append("LanguageChoiceWrapper", "14");
     body.append("Program", program);
     const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = () => {
+    xhttp.onreadystatechange = function() {
     if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
             callback(JSON.parse(this.responseText));
     }};
@@ -23,14 +23,14 @@ function getProgram(args) {
 }
 
 function getArgsCode(args) {
-    let argCode = ""
+    let argsCode = ""
     if (args) {
         for (let i = 0; i < args.length; i++) {
-            argCode += `arg[${i + 1}] = "${args[i]}"\n`
+            argsCode += `arg[${i + 1}] = "${args[i]}"\n`
         }
     }
 
-    return argCode
+    return argsCode
 }
 
 function getArgs() {
@@ -67,6 +67,7 @@ function executeProgram() {
         document.querySelector("#output").value = response.Result;
         document.querySelector("#errors").value = response.Errors;
         document.querySelector("#warnings").value = response.Warnings;
+        simulate(response.Result)
     });
 }
 
@@ -101,10 +102,10 @@ const dict = {
     "[addBlock]": addBlock, "[addItemToInventory]": addItemToInventory, "[removeItemFromInventory]": removeItemFromInventory
 };
 
-function simulate() {
-    const output = document.querySelector("#output").split("\n")
-    for (let i = 0; i < output.length; i++) {
-        const components = output[i].split(" ")
+function simulate(output) {
+    const lines = output.split("\n")
+    for (let i = 0; i < lines.length; i++) {
+        const components = lines[i].split(" ")
         const func = dict[components[0]];
         func(...components.slice(1))
     }
