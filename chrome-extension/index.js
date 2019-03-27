@@ -72,27 +72,27 @@ function executeProgram() {
 
 function generateInventory(slots) {
     const inventoryElement = document.querySelector("#inventory");
-    for (let i = 0; i < inventory.length; i++) {
+    for (let i = 0; i < slots; i++) {
+        const slot = {}
         const inventorySlot = document.createElement("div");
-        inventorySlot.setAttribute("id", `inventory-slot-${i + 1}`);
+        inventorySlot.id = `inventory-slot-${i + 1}`;
 
-        const slotName = document.createElement("input");
-        slotName.setAttribute("type", "text");
-        slotName.value = inventory[i].name;
-        
-        const slotCount = document.createElement("input");
-        slotCount.setAttribute("type", "number");
-        slotCount.setAttribute("min", "0");
-        slotCount.setAttribute("max", "64");
-        slotCount.value = inventory[i].count;
+        slot.name = document.createElement("input");
+        slot.name.type = "text";
 
-        inventorySlot.appendChild(slotName);
-        inventorySlot.appendChild(slotCount);
+        slot.count = document.createElement("input");
+        slot.count.type = "number";
+        slot.count.min = "0";
+        slot.count.max = "64";
+
+        inventorySlot.appendChild(slot.name);
+        inventorySlot.appendChild(slot.count);
         inventoryElement.appendChild(inventorySlot);
+        inventory.push(slot)
     }
 }
 
-const dict = { 
+const dict = {
     "[setSelectedSlot]": setSelectedSlot, "[setFuelLevel]": setFuelLevel,
     "[forward]": forward, "[up]": up, "[down]": down, "[back]": back,
     "[turnLeft]": turnLeft, "[turnRight]": turnRight,
@@ -109,7 +109,7 @@ function simulate() {
 }
 
 const directionEnum = { forward: 1, left: 2, back: 3, right: 4 }
-let inventory = [ { name: "minecraft:coal_block", count: 64 }, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+const inventory = []
 let blocks = []
 let selectedSlot = 1
 let fuelLevel = 0
@@ -165,7 +165,7 @@ function addBlock(name, x, y, z) {
 function addItemToInventory(name, slot) {
     const inventorySlot = inventory[slot - 1];
     if (inventorySlot.name == "")
-    { 
+    {
         inventorySlot.name = name
     }
     inventorySlot.count = parseInt()
@@ -177,5 +177,7 @@ function removeItemFromInventory(quantity) {
 
 onload = () => {
     document.querySelector("#btn-execute").onclick = executeProgram;
-    generateInventory();
+    generateInventory(16);
+    inventory[0].name.value = "minecraft:coal_block"
+    inventory[0].count.value = "64"
 }
