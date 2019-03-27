@@ -113,10 +113,10 @@ if not turtle then
     turtle.digUp = function () return digBase(turtle.inspectUp, getCoordinatesAbove, "digUp") end
     turtle.digDown = function () return digBase(turtle.inspectDown, getCoordinatesBeneath, "digDown") end
 
-        function detectBase(inspectFunction, functionName) 
-            local success, data = inspectFunction()
-            return success
-        end
+    function detectBase(inspectFunction, functionName) 
+        local success, data = inspectFunction()
+        return success
+    end
 
     turtle.detect = function () return detectBase(turtle.inspect, "detect") end
     turtle.detectUp = function () return detectBase(turtle.inspectUp, "detectUp") end
@@ -225,18 +225,18 @@ if not turtle then
 
     turtle.forward = function () 
         if forward() then 
-            if direction == directionEnum.forward then currentZ = currentZ + 1
-            elseif direction == directionEnum.back then currentZ = currentZ - 1
-            elseif direction == directionEnum.left then currentX = currentX - 1
-            elseif direction == directionEnum.right then currentX = currentX + 1 end
+            if currentDirection == directionEnum.forward then currentZ = currentZ + 1
+            elseif currentDirection == directionEnum.back then currentZ = currentZ - 1
+            elseif currentDirection == directionEnum.left then currentX = currentX - 1
+            elseif currentDirection == directionEnum.right then currentX = currentX + 1 end
         end 
     end
     turtle.back = function ()
         if back() then
-            if direction == directionEnum.forward then currentZ = currentZ - 1
-            elseif direction == directionEnum.back then currentZ = currentZ + 1
-            elseif direction == directionEnum.left then currentX = currentX + 1
-            elseif direction == directionEnum.right then currentX = currentX - 1 end
+            if currentDirection == directionEnum.forward then currentZ = currentZ - 1
+            elseif currentDirection == directionEnum.back then currentZ = currentZ + 1
+            elseif currentDirection == directionEnum.left then currentX = currentX + 1
+            elseif currentDirection == directionEnum.right then currentX = currentX - 1 end
         end
     end
     turtle.up = function () 
@@ -263,7 +263,7 @@ if not turtle then
     end
 
     function getCoordinatesInFront()
-        local x, y, z
+        local x, y, z = 0, 0, 0
         if currentDirection == directionEnum.forward then z = currentZ + 1
         elseif currentDirection == directionEnum.back then z = currentZ - 1
         elseif currentDirection == directionEnum.right then x = currentX + 1
@@ -272,7 +272,7 @@ if not turtle then
     end
 
     function getCoordinatesBehind()
-        local x, y, z
+        local x, y, z = 0, 0, 0
         if currentDirection == directionEnum.forward then z = currentZ - 1
         elseif currentDirection == directionEnum.back then z = currentZ + 1
         elseif currentDirection == directionEnum.right then x = currentX - 1
