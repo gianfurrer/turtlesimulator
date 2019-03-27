@@ -70,19 +70,19 @@ function executeProgram() {
 
 function generateInventory(slots) {
     const inventory = document.querySelector("#inventory");
-    for (let i = 0; i < slots; i++) {
+    for (let i = 1; i <= slots; i++) {
         const inventorySlot = document.createElement("div")
         inventorySlot.setAttribute("id", `inventory-slot-${i}`)
 
         const slotName = document.createElement("input")
         slotName.setAttribute("type", "text")
-        if (i == 0) { slotName.value = "minecraft:coal_block" }
+        if (i == 1) { slotName.value = "minecraft:coal_block" }
         
         const slotCount = document.createElement("input")
         slotCount.setAttribute("type", "number")
         slotCount.setAttribute("min", "0")
         slotCount.setAttribute("max", "64")
-        i == 0 ? slotCount.value = 64 : slotCount.value = 0
+        i == 1 ? slotCount.value = 64 : slotCount.value = 0
 
         inventorySlot.appendChild(slotName)
         inventorySlot.appendChild(slotCount)
@@ -92,5 +92,5 @@ function generateInventory(slots) {
 
 onload = () => {
     document.querySelector("#btn-execute").onclick = executeProgram;
-    generateInventory(16)
+    generateInventory(16);
 }
