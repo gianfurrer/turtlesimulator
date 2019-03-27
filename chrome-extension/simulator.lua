@@ -28,9 +28,8 @@ if not turtle then
     local selectedSlot = 1
 
 
-    function setFuelLevel(value)
-        fuelLevel = value
-    end
+    function setFuelLevel(value) fuelLevel = value print("[setFuelLevel] " .. value) end
+    function setSelectedSlot(value) selectedSlot = value print("[setSelectedSlot] " .. value) end
 
     -- inventory functions 
     do 
@@ -41,7 +40,7 @@ if not turtle then
             if slot < 1 or slot > 16 then
                 return false
             end
-            selectedSlot = slot 
+            setSelectedSlot(slot)
             return true
         end
         turtle.getItemCount = function (slot) 
@@ -75,7 +74,7 @@ if not turtle then
                 quantity = inventory[selectedSlot].count
             end
             
-            turtle.drop(quantity)
+            removeItemFromInventory(quantity)
             local fuelLevel = (fuelLevel + (quantity * fuelItems[name]))
             if fuelLevel > fuelLimit then setFuelLevel(fuelLimit) else setFuelLevel(fuelLevel) end
             return true
@@ -90,6 +89,7 @@ if not turtle then
             end  
             setFuelLevel(fuelLevel - 1)
             success = not detectFunction()
+            if success then print("[" .. functionName .. "]") end
             return success
         end
 
@@ -155,7 +155,7 @@ if not turtle then
             end
             local x, y, z = getCoordinatesFunction()
             addBlock(inventory[selectedSlot].name, x, y, z)
-            inventory[selectedSlot].count = inventory[selectedSlot].count - 1
+            removeItemFromInventory(1)
             return true
         end
 
@@ -199,11 +199,9 @@ if not turtle then
             for i = 1, #blocks do
                 local block = blocks[i]
                 if block.x == x and block.y == y and block.z == z then
-                    print("[getBlockAtCoordinates] " .. x .. " " .. y .. " " .. z .. " " .. tostring(block.name ~= "minecraft:air") .. " " .. block.name)
                     return block.name ~= "minecraft:air", block.name
                 end
             end
-            print("[getBlockAtCoordinates] " .. x .. " " .. y .. " " .. z .. " " .. tostring(true) .. " ".. defaultBlock)
             return true, defaultBlock
         end
 
@@ -211,7 +209,7 @@ if not turtle then
             for i = 1, 16 do
                 if inventory[i].count < 64 and inventory[i].name == name then
                     inventory[i].count = inventory[i].count + 1
-                    print("[addItemToInventory] " .. name .. " " .. tostring(true) .. " " ..i)
+                    print("[addItemToInventory] " .. name .. " " ..i)
                     return true
                 end
             end
@@ -219,12 +217,18 @@ if not turtle then
                 if inventory[i].count == 0 then
                     inventory[i].name = name
                     inventory[i].count = 1
-                    print("[addItemToInventory] " .. name .. " " .. tostring(true) .. " " .. i)
+                    print("[addItemToInventory] " .. name .. " " .. i)
                     return true
                 end
             end
-            print("[addItemToInventory] " .. name .. " " .. tostring(false))
             return false
+        end
+
+        function removeItemFromInventory(quantity)
+            quantity = quantity or turtle.getItemCount()
+            if quantity > turtle.getItemCount() then quantity = turtle.getItemCount() end
+            inventory[selectedSlot].count = inventory[selectedSlot].count - quantity
+            print("[removeItemFromInventory] " .. quantity)
         end
     end
 
@@ -239,11 +243,11 @@ if not turtle then
         local turnLeft = turtle.turnLeft
         local turnRight = turtle.turnRight
 
-        turtle.forward = function () forward() table.insert(movements, directionEnum.forward) end
-        turtle.up = function () up() table.insert(movements, directionEnum.up) end
-        turtle.down = function () down() table.insert(movements, directionEnum.down) end
-        turtle.turnLeft = function () turnLeft() table.insert(movements, directionEnum.left) end
-        turtle.turnRight = function () turnRight() table.insert(movements, directionEnum.right) end
+        turtle.forward = function () if forward() then table.insert(movements, directionEnum.forward) end end
+        turtle.up = function () if up() then table.insert(movements, directionEnum.up) end end
+        turtle.down = function () if down() then table.insert(movements, directionEnum.down) end end
+        turtle.turnLeft = function () if turnLeft() then table.insert(movements, directionEnum.left) end end
+        turtle.turnRight = function () if turnRight() then table.insert(movements, directionEnum.right) end end
 
         function getCoordinates()
             local x, y, z = 0, 0, 0
