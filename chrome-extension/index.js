@@ -103,7 +103,7 @@ const dict = {
 };
 
 function simulate(output) {
-    const lines = output.split("\n")
+    const lines = output.trim().split("\n")
     for (let i = 0; i < lines.length; i++) {
         const components = lines[i].split(" ")
         const func = dict[components[0]];
