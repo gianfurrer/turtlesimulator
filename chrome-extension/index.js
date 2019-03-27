@@ -88,7 +88,7 @@ function generateInventory(slots) {
 
         inventorySlot.appendChild(slotName);
         inventorySlot.appendChild(slotCount);
-        inventory.appendChild(inventorySlot);
+        inventoryElement.appendChild(inventorySlot);
     }
 }
 
@@ -96,7 +96,6 @@ const dict = {
     "[setSelectedSlot]": setSelectedSlot, "[setFuelLevel]": setFuelLevel,
     "[forward]": forward, "[up]": up, "[down]": down, "[back]": back,
     "[turnLeft]": turnLeft, "[turnRight]": turnRight,
-    "[drop]": drop, "[dropUp]": dropUp, "[dropDown]": dropDown,
     "[addBlock]": addBlock, "[addItemToInventory]": addItemToInventory, "[removeItemFromInventory]": removeItemFromInventory
 };
 
