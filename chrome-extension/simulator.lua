@@ -97,8 +97,8 @@ if not turtle then
         turtle.up = function () return moveBase(turtle.detectUp, "up") end
         turtle.down = function () return moveBase(turtle.detectDown, "down") end
         turtle.back = function () return moveBase(detectBack, "back") end
-        turtle.turnLeft = function () return true end
-        turtle.turnRight = function () return true end
+        turtle.turnLeft = function () print("[turnLeft]") return true end
+        turtle.turnRight = function () print("[turnRight]") return true end
     end
 
     -- dig functions
@@ -171,7 +171,7 @@ if not turtle then
             if count > inventory[selectedSlot].count  then
                 count = inventory[selectedSlot].count 
             end
-            print("[drop] " .. count .. " " .. tostring(true))
+            print("[drop] " .. count)
             return true
         end
         turtle.dropUp = function (count) 

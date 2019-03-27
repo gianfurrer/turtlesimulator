@@ -10,17 +10,19 @@ function runLua (program, callback) {
     body.append("LanguageChoiceWrapper", "14");
     body.append("Program", program);
     const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-    if (this.readyState == XMLHttpRequest.DONE) {
-        if (this.status == 200) {
+    xhttp.onreadystatechange = () => {
+    if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
             callback(JSON.parse(this.responseText));
-        }
     }};
     xhttp.open("POST", "https://rextester.com/rundotnet/Run", true);
     xhttp.send(body);
 }
 
 function getProgram(args) {
+    return getArgsCode(args) + "\n" + simulatorCode + "\n" + getInventoryCode() + "\n" + document.querySelector("#input").value;
+}
+
+function getArgsCode(args) {
     let argCode = ""
     if (args) {
         for (let i = 0; i < args.length; i++) {
@@ -28,7 +30,7 @@ function getProgram(args) {
         }
     }
 
-    return argCode + "\n" + simulatorCode + "\n" + getInventoryCode() + "\n" + document.querySelector("#input").value;
+    return argCode
 }
 
 function getArgs() {
@@ -43,7 +45,7 @@ function getInventoryCode() {
         const slot = inventorySlots[i];
         inventoryCode += `{ name = "${slot.children[0].value}", count = ${slot.children[1].value} },\n`;
     }
-    inventoryCode += "}";
+    inventoryCode += "}\n";
     return inventoryCode;
 }
 
@@ -69,28 +71,94 @@ function executeProgram() {
 }
 
 function generateInventory(slots) {
-    const inventory = document.querySelector("#inventory");
-    for (let i = 1; i <= slots; i++) {
-        const inventorySlot = document.createElement("div")
-        inventorySlot.setAttribute("id", `inventory-slot-${i}`)
+    const inventoryElement = document.querySelector("#inventory");
+    for (let i = 0; i < inventory.length; i++) {
+        const inventorySlot = document.createElement("div");
+        inventorySlot.setAttribute("id", `inventory-slot-${i + 1}`);
 
-        const slotName = document.createElement("input")
-        slotName.setAttribute("type", "text")
-        if (i == 1) { slotName.value = "minecraft:coal_block" }
+        const slotName = document.createElement("input");
+        slotName.setAttribute("type", "text");
+        slotName.value = inventory[i].name;
         
-        const slotCount = document.createElement("input")
-        slotCount.setAttribute("type", "number")
-        slotCount.setAttribute("min", "0")
-        slotCount.setAttribute("max", "64")
-        i == 1 ? slotCount.value = 64 : slotCount.value = 0
+        const slotCount = document.createElement("input");
+        slotCount.setAttribute("type", "number");
+        slotCount.setAttribute("min", "0");
+        slotCount.setAttribute("max", "64");
+        slotCount.value = inventory[i].count;
 
-        inventorySlot.appendChild(slotName)
-        inventorySlot.appendChild(slotCount)
-        inventory.appendChild(inventorySlot)
+        inventorySlot.appendChild(slotName);
+        inventorySlot.appendChild(slotCount);
+        inventory.appendChild(inventorySlot);
     }
+}
+
+const dict = { 
+    "[setSelectedSlot]": setSelectedSlot, "[setFuelLevel]": setFuelLevel,
+    "[forward]": forward, "[up]": up, "[down]": down, "[back]": back,
+    "[turnLeft]": turnLeft, "[turnRight]": turnRight,
+    "[drop]": drop, "[dropUp]": dropUp, "[dropDown]": dropDown,
+    "[addBlock]": addBlock, "[addItemToInventory]": addItemToInventory, "[removeItemFromInventory]": removeItemFromInventory
+};
+
+function simulate() {
+    const output = document.querySelector("#output").split("\n")
+    for (let i = 0; i < output.length; i++) {
+        const components = output[i].split(" ")
+        const func = dict[components[0]];
+        func(...components.slice(1))
+    }
+}
+
+const directionEnum = { forward: 1, left: 2, back: 3, right: 4 }
+let inventory = [ { name: "minecraft:coal_block", count: 64 }, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+let selectedSlot = 1
+let fuelLevel = 0
+let x = 0
+let y = 0
+let z = 0
+let direction = directionEnum.forward
+
+function setSelectedSlot(slot) {
+    selectedSlot = parseInt(slot)
+}
+
+function setFuelLevel(value) {
+    fuelLevel = parseInt(value)
+}
+
+function forward() {
+    if (direction == directionEnum.forward) { z += 1 }
+    else if (direction == directionEnum.back) { z -= 1 }
+    else if (direction == directionEnum.left) { x -= 1 }
+    else if (direction == directionEnum.right) { x += 1}
+}
+
+function back() {
+    if (direction == directionEnum.forward) { z -= 1 }
+    else if (direction == directionEnum.back) { z += 1 }
+    else if (direction == directionEnum.left) { x += 1 }
+    else if (direction == directionEnum.right) { x -= 1}
+}
+
+function up() {
+    y += 1
+}
+
+function down() {
+    y -= 1
+}
+
+function turnLeft() {
+    if (direction == directionEnum.right) { direction = direction.forward }
+    else (direction += 1)
+}
+
+function turnRight() {
+    if (direction == directionEnum.forward) { direction = direction.right }
+    else (direction -= 1)
 }
 
 onload = () => {
     document.querySelector("#btn-execute").onclick = executeProgram;
-    generateInventory(16);
+    generateInventory();
 }
