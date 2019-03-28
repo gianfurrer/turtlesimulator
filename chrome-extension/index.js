@@ -6,12 +6,12 @@ getFileContent("simulator.lua", (content) => {
     simulatorCode = content;
 })
 
-function overrideLuaPrint(code, id) {
-  return 'local js = require "js"\nlocal output = js.global.document:querySelector("#output")\nlocal simulator = js.global.simulator\n\nfunction print(text)\noutput.textContent = string.format("%s%s\\n", output.textContent, text)\nsimulator:addAction(text)\nend\n\n'+code+'\nprint("[end] '+id+'")';
+function overrideLuaPrint(code) {
+  return 'local js = require "js"\n\n\n\nfunction print(text)\njs.global:output(text)\nend\n\n'+code+'\nprint("[end]")';
 }
 
-function getProgram(args, id) {
-    return overrideLuaPrint(getArgsCode(args) + "\n" + simulatorCode + "\n" + getInventoryCode(startInventory) + "\n" + document.querySelector("#input").value, id);
+function getProgram(args) {
+    return overrideLuaPrint(getArgsCode(args) + "\n" + simulatorCode + "\n" + getInventoryCode(startInventory) + "\n" + document.querySelector("#input").value);
 }
 
 function getArgsCode(args) {
@@ -51,19 +51,12 @@ function getFileContent(fileName, callback) {
     xhttp.send();
 }
 
-function executeProgram() {
+async function executeProgram() {
     const args = getArgs();
-    const id = new Date().getTime();
-    const program = getProgram(args, id);
+    const program = getProgram(args);
 
     window.simulator = new Simulator();
-
-    const script = document.createElement("script")
-    script.id = id;
-    script.type = "application/lua";
-    script.textContent = program;
-
-    document.body.appendChild(script);
+    luaWorker.postMessage(program);
 }
 
 function generateInventory(inventoryElement, slots) {
@@ -112,20 +105,12 @@ function Simulator() {
   this.direction = directionEnum.forward;
   this.programCounter = 0;
   output.innerHTML = "";
-  this.actions = [];
 
-  this.addAction = action => {
-    this.actions.push(action);
+  this.executeAction = action => {
+    const components = action.split(" ");
+    const func = this.dict[components[0]];
+    func(...components.slice(1));
   }
-
-  this.intervalId = setInterval(() => {
-    if (this.actions.length) {
-      const action = this.actions.shift();
-      const components = action.split(" ");
-      const func = this.dict[components[0]];
-      func(...components.slice(1));
-    }
-  }, 100);
 
   this.setSelectedSlot = (slot) => {
       this.selectedSlot = parseInt(slot)
@@ -133,6 +118,7 @@ function Simulator() {
 
   this.setFuelLevel = (value) => {
       this.fuelLevel = parseInt(value)
+      document.querySelector("#fuel-level").textContent = this.fuelLevel
   }
 
   this.forward = () => {
@@ -184,9 +170,8 @@ function Simulator() {
       this.inventory[this.selectedSlot - 1].count.value -= quantity
   }
 
-  this.end = id => {
+  this.end = () => {
     clearInterval(this.intervalId);
-    Array.from(document.querySelectorAll("script")).filter(s => s.id == id)[0].remove();
   }
 
   this.dict = {
@@ -207,7 +192,13 @@ onload = () => {
 }
 
 onerror = e => {
-  if (e.startsWith('[string "..."]')) {
+  if (e.startsWith('[string "..."]') || e.startsWith("uncaught exception")) {
     document.querySelector("#errors").textContent = e.split(":").splice(2).join(":").trim();
   }
 }
+
+const luaWorker = new Worker("lua-worker.js");
+luaWorker.addEventListener("message", e => {
+  output.textContent += e.data + "\n";
+  simulator.executeAction(e.data);
+});

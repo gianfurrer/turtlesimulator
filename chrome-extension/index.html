@@ -42,21 +42,7 @@
       <textarea id="errors"></textarea>
       <textarea id="warnings"></textarea>
     </main>
-    
+
     <script src="index.js"></script>
-
-    <script type="application/lua">
-      local js = require "js"
-      local global = js.global
-      local document = global.document
-      local output = document:querySelector("#output")
-
-      local function print(text)
-        output.textContent = string.format("%s%s\n", output.textContent, text)
-      end
-
-      print("[end]")
-    </script>
-
   </body>
 </html>
