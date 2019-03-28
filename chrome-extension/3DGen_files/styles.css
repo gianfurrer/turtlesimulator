@@ -1,0 +1,349 @@
+#breadcrumbs,
+.contactbtn {
+	display:none;
+}
+
+#main-content {
+    font-family: Arial,sans_serif;
+	position:relative;
+    width: 95%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding-left: 5%;
+}
+#main-content h1 {
+    margin: 40px 0;
+    font-size: 28px;
+    line-height: 1.3;
+}
+#main-content h3 {
+    margin: 10px 0 12px 0;
+    background: #ffce6c;
+    padding: 10px 0 10px 15px;
+	margin-top:30px !important;
+	width:50%;
+}
+
+.formelblock {
+	width:85%;
+	/*max-width:800px;*/
+}
+
+textarea#val_drawings {
+	border:1px solid #DDD;
+	padding:5px;
+	max-width:100%;
+	width:100%;
+	height:125px;
+	display:inline-block;
+	background:#FFC;
+}
+
+#geoswitches {
+
+}
+#alphaswitcher, #axesswitcher {
+	display:inline-block;
+	font-size:11px;
+	color:#333;
+}
+#axesswitcher {
+	margin-left:20px;
+}
+#axes-visible {
+	vertical-align:-2px;
+}
+
+#val_alpha {
+	display: inline-block;
+	width: 20px;
+	border: 1px solid #EEE;
+	padding:3px;
+	text-align: center;
+	font-size:11px;
+	color:#333;
+}
+
+span.tooltip {
+	border-bottom:1px dotted #AAA;
+	cursor:default;
+}
+
+.hintline {
+	font-size:11px;
+	color:#999;
+}
+
+#rendercanvas {
+	width: 100%;
+    height: 100%;
+}
+#fullscreen {
+	float:right;
+	font-size:12px;
+	padding:10px 0 0 0;
+	line-height:100%;
+	border-bottom:1px dotted #CCD;
+	cursor:pointer;
+}
+kbd {
+	cursor:pointer;
+	white-space: normal;
+}
+#additionals {
+	display:inline-block;
+	width:55%;
+	max-width:440px;
+	background:#F0F0F0;
+	vertical-align:top;
+	padding:5px 10px;
+	font-size:10px;
+	line-height:170%;
+	overflow-y: auto;
+	height: 125px;
+	border: 1px solid rgb(221, 221, 221);
+	margin-top: 1px;
+	cursor:default;
+}
+#additionals span:hover {
+	background:#FFF;
+	padding:3px;
+}
+@media only screen and (min-width:960px){
+	#additionals {
+		max-width:540px;
+	}
+}
+
+#remaustip {
+	display:inline-block;
+	margin-top:5px;
+	font-size:11px;
+	color:#555;
+}
+
+.wrapper3d {
+	height:600px;
+	width:90%;
+	height:80%;
+	margin-bottom:70px;
+}
+.wrapper3dinner {
+	position:relative;
+	width:100%;
+	border:1px solid #CCC;
+	height:600px;
+}
+
+#showversion {
+	float:right;
+	font-size:12px;
+	color:#ABB;
+}
+
+img.geoknechtpreview {
+	max-width: 300px !important;
+	height: auto;
+	border:1px solid #CCC;
+	background:#FFF;
+}
+img.geoknechtpreview:hover {
+	border:1px solid #BBC;
+}
+
+.geogallery li {
+	display: inline-block;
+	vertical-align: top;
+	margin-right:15px;
+	max-width:305px;
+	line-height:150%;
+}
+.gal_caption {
+	display: block;
+	font-size: 12px;
+	color: #777;
+}
+
+/* language choice dropdown */
+/* Dropdown Button */
+.lang-dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 14px;
+    border: none;
+    cursor: pointer;
+}
+
+/* The container div - needed to position the dropdown content */
+.lang-dropdown {
+    position: relative;
+    display: inline-block;
+	float:right;
+	margin-top:-50px;
+}
+.lang-dropdown:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.lang-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.lang-dropdown-content a {
+    color: black;
+    padding: 12px 16px 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.lang-dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.lang-dropdown:hover .lang-dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.lang-dropdown:hover .lang-dropbtn {
+    background-color: #3e8e41;
+}
+
+.xjbutton {
+	cursor:pointer;
+}
+
+.fullscreen-canvas {
+    position: fixed;
+    width: 100% !important;
+    height: 100% !important;
+    top: 0px;
+    left: 0px;
+    z-index: 2222;
+}
+.fullscreen-val_drawings {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 2233;
+	background:rgba(0,0,0,0.1) !important;
+	overflow: hidden;
+}
+#fullscreenbtn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+	cursor:pointer;
+	color:#555;
+}
+#fullscreenbtn:hover {
+	color:#111;
+}
+#fullscreenbtn-close {
+	display:none;
+    position: fixed;
+    top: 3px;
+    right: 3px;
+    background: #F0F0F0;
+    background: rgba(0,0,0,0.1);
+    padding: 5px 10px;
+    z-index: 3333;
+	cursor:pointer;
+	color:#555;
+}
+#fullscreenbtn-close:hover {
+	color:#111;
+}
+
+#shaderbtn {
+    position: absolute;
+    top: 5px;
+    right: 35px;
+	cursor:pointer;
+	color:#555;
+}
+#shaderbtn:hover {
+	color:#111;
+}
+
+#perspectiveviewbtn {
+    position: absolute;
+    top: 5px;
+    right: 87px;
+	cursor:pointer;
+	color:#555;
+}
+#perspectiveviewbtn:hover {
+	color:#111;
+}
+
+#memvaluelink {
+	position:absolute;
+	right:62px;
+	top:5px;
+	cursor:pointer;
+	color:#555;
+}
+#memvaluelink:hover {
+	color:#111;
+}
+/* not for geoservant, schrägbildzeichner only in DE -- now by PHP */
+/*
+.geoservant-body #perspectiveviewbtn {
+	display:none;
+}
+*/
+.geoservant-body #memvaluelink {
+	right: 62px;
+}
+
+#stickyfooterbar {
+	display:none;
+}
+
+@media only screen and (max-width:540px)
+{
+	.lang-dropdown {
+		position:absolute;
+		top:-40px;
+		right:-15px;
+		margin-top:0;
+	}
+	.itemblock {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+	.formelblock {
+		width:95%;
+	}
+	textarea#val_drawings,
+	#additionals {
+		width:100%;
+		padding:5px;
+	}
+	#memvaluelink {
+		display:none;
+	}
+	.wrapper3d {
+		width:100%;
+		margin-top:20px;
+	}
+	.wrapper3dinner {
+		height:400px;
+	}
+	#main-content {
+		padding-right: 2%;
+	}
+	#main-content h3 {
+		width:100%;
+	}
+}

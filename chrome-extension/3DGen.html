@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>3D Generator</title>
+		<script src="./3DGen_files/jquery.min.js"></script>
+		<link href="./3DGen_files/font-awesome.css" rel="stylesheet" media="all">
+		<link href="./3DGen_files/styles.css" rel="stylesheet">
+		<script src="./3DGen_files/three.r84.min.js"></script>
+		<script src="./3DGen_files/OrbitControls.js"></script>
+		<script src="./3DGen_files/Detector.js"></script>
+		<script src="./3DGen_files/script.js"></script>
+	</head>
+	<body class="page-geoservant-de parentid-88 isvisitor" id="pageid-321">
+
+		<div id="outer-wrapper">
+			<div id="main-content">
+
+				<article>
+	<div class="itemblock" id="geoslaveprog">
+		<div class="formelblock fullblock">
+			<div class="formel_main">
+				<textarea name="val_drawings" id="val_drawings">
+quader(4|1|1 2|4|1)[30 90 0]
+vektor(0|0|0 3|3|3)
+vektor(0|0|0 1|3|4)
+vektor(0|0|0 1|1|4)
+dreieck(3|3|3 1|3|4 1|1|4)
+kugel(-4|-4|2 1){F00}
+punkt(3|3|3 "A")
+punkt(1|3|4 "B")
+punkt(1|1|4 "C")
+würfel(4|-4|1 2)
+				</textarea>
+			</div>
+		</div>
+
+		<div class="wrapper3d">
+			<div class="wrapper3dinner">
+				<span id="fullscreenbtn" title="Fullscreen"><i class="fa fa-arrows-alt fa-lg" aria-hidden="true"></i></span>
+				<span id="fullscreenbtn-close" title="Close fullscreen"><i class="fa fa-times fa-lg" aria-hidden="true"></i></span>
+				<span id="memvaluelink" title="Link zur aktuellen Szene erstellen"><i class="fa fa-link fa-lg" aria-hidden="true"></i></span>
+				<span id="shaderbtn" title="Shader"><i class="fa fa-cube fa-lg" aria-hidden="true"></i> </span>
+				<div id="rendercanvas"></div>
+
+				<div id="geoswitches">
+					<div id="alphaswitcher">
+						Transparenz: <input type="number" min="0" max="1" value="0.5" step="0.1" name="val_alpha" id="val_alpha">
+					</div>
+
+					<div id="axesswitcher">
+						<input type="checkbox" name="axes-visible" id="axes-visible" checked="">
+						<label for="axes-visible">Achsen</label>
+					</div>
+				</div>
+			</div> <!-- wrapper3dinner -->
+
+		</div> <!-- wrapper3d -->
+
+
+<div id="translation-data" style="display:none;">
+	<p id="meta-l_coordplanes">koordinatenebenen</p>
+	<p id="meta-l_triangle">dreieck</p>
+	<p id="meta-l_plane">ebene</p>
+	<p id="meta-l_line">gerade</p>
+	<p id="meta-l_sphere">kugel</p>
+	<p id="meta-l_polygon">polygon</p>
+	<p id="meta-l_point">punkt</p>
+	<p id="meta-l_cuboid">quader</p>
+	<p id="meta-l_parallelepiped">spat</p>
+	<p id="meta-l_lineseg">strecke</p>
+	<p id="meta-l_text">text</p>
+	<p id="meta-l_vector">Vektor</p>
+	<p id="meta-l_vector_dt">vektor</p>
+	<p id="meta-l_vectorlength">Vektorlänge</p>
+	<p id="meta-l_quadrangle">viereck</p>
+	<p id="meta-l_cube">würfel</p>
+	<p id="meta-l_cylinder">zylinder</p>
+	<p id="meta-l_width">Breite</p>
+	<p id="meta-l_width_abbr">b</p>
+	<p id="meta-l_length">Länge</p>
+	<p id="meta-l_length_abbr">l</p>
+	<p id="meta-l_height">Höhe</p>
+	<p id="meta-l_height_abbr">h</p>
+	<p id="meta-l_radius">Radius</p>
+	<p id="meta-l_radius_abbr">r</p>
+	<p id="meta-l_diameter">Durchmesser</p>
+	<p id="meta-l_diameter_abbr">d</p>
+	<p id="meta-l_perimeter">Umfang</p>
+	<p id="meta-l_perimeter_abbr">u</p>
+	<p id="meta-l_basearea">Grundfläche</p>
+	<p id="meta-l_basearea_abbr">A<sub>G</sub></p>
+	<p id="meta-l_lateralsurface">Mantelfläche</p>
+	<p id="meta-l_lateralsurface_abbr">A<sub>M</sub></p>
+	<p id="meta-l_surface">Oberfläche</p>
+	<p id="meta-l_surface_abbr">A<sub>O</sub></p>
+	<p id="meta-l_volume">Volumen</p>
+	<p id="meta-l_volume_abbr">V</p>
+	<p id="meta-l_edgelength_abbr">l</p>
+	<p id="meta-l_triangle_sidelength">Seitenlängen des Dreiecks</p>
+	<p id="meta-l_conn_vectors">Verbindungsvektoren</p>
+	<p id="meta-l_area">Flächeninhalt</p>
+	<p id="meta-l_plane_pf">Parameterform der Ebenengleichung</p>
+	<p id="meta-l_plane_pf_abbr">PF</p>
+	<p id="meta-l_plane_cf">Koordinatenform der Ebenengleichung</p>
+	<p id="meta-l_plane_cf_abbr">KF</p>
+	<p id="meta-l_line_pf">Parameterform der Geradengleichung</p>
+	<p id="meta-l_line_pf_abbr">PF</p>
+	<p id="meta-l_line_trackpoints">Spurpunkte (Achsenabschnitte der Gerade)</p>
+	<p id="meta-l_line_trackpoints_abbr">SP</p>
+	<p id="meta-l_sphere_radius">Radius</p>
+	<p id="meta-l_sphere_perimeter">Umfang u = 2·π·r</p>
+	<p id="meta-l_sphere_area">Kreisfläche A<sub>K</sub> = π·r²</p>
+	<p id="meta-l_sphere_area_abbr">A<sub>K</sub></p>
+	<p id="meta-l_sphere_surface">Oberfläche A<sub>O</sub> = 4·π·r²</p>
+	<p id="meta-l_sphere_volume">Volumen V = (4/3)·π·r³</p>
+	<p id="meta-l_sphere_equation">Kugelgleichung:<br>(x - Mx)² + (y - My)² + (z - Mz)² = r²</p>
+	<p id="meta-l_cuboid_edges">Kantenlängen des Quaders (Länge, Breite, Höhe)</p>
+	<p id="meta-l_cuboid_diagonal">Raumdiagonale e = v(b²+l²+h²)</p>
+	<p id="meta-l_cuboid_perimeter">Umfang u = 2·b+2·l</p>
+	<p id="meta-l_cuboid_basearea">Grundfläche A<sub>G</sub> = b·l</p>
+	<p id="meta-l_cuboid_lateralsurface">Mantelfläche A<sub>M</sub> = 2·b·h+2·l·h</p>
+	<p id="meta-l_cuboid_surface">Oberfläche A<sub>O</sub> = 2·b·h+2·l·h+2·b·l</p>
+	<p id="meta-l_cuboid_volume">Volumen V=b·l·h</p>
+	<p id="meta-l_cuboid_edgeslength">Summe aller Kantenlängen l = 4·b+4·l+4·h</p>
+	<p id="meta-l_vectors_length">Länge der Vektoren</p>
+	<p id="meta-l_lineseg_length">Streckenlänge</p>
+	<p id="meta-l_lineseg_length_abbr">s</p>
+	<p id="meta-l_lineseg_asvec">als Vektor</p>
+	<p id="meta-l_vector_anglexy">Winkel zur xy-Ebene</p>
+	<p id="meta-l_quadrangle_length">Seitenlängen des Vierecks</p>
+	<p id="meta-l_cube_edge">Kantenlänge des Würfels a</p>
+	<p id="meta-l_cube_areadiagonal">Flächendiagonale d = a·v2</p>
+	<p id="meta-l_cube_spacediagonal">Raumdiagonale e = a·v3</p>
+	<p id="meta-l_cube_perimeter">Umfang u = 4·a</p>
+	<p id="meta-l_cube_basearea">Grundfläche A<sub>G</sub> = a²</p>
+	<p id="meta-l_cube_lateralsurface">Mantelfläche A<sub>M</sub> = 4·a²</p>
+	<p id="meta-l_cube_surface">Oberfläche A<sub>O</sub> = 6·a²</p>
+	<p id="meta-l_cube_volume">Volumen V = a³</p>
+	<p id="meta-l_cube_lengthsides">Summe aller Kantenlängen l = 12·a</p>
+	<p id="meta-l_cylinder_diameter">Durchmesser d = 2·r</p>
+	<p id="meta-l_cylinder_perimeter">Umfang u = 2·π·r</p>
+	<p id="meta-l_cylinder_basearea">Grundfläche A<sub>G</sub> = π·r²</p>
+	<p id="meta-l_cylinder_lateralsurface">Mantelfläche A<sub>M</sub> 2·π·r·h</p>
+	<p id="meta-l_cylinder_surface">Oberfläche A<sub>O</sub> = 2·π·r·(r+h)</p>
+	<p id="meta-l_cylinder_volume">Volumen V = π·r²·h</p>
+</div>
+				</article>
+			</div> <!-- main-content -->
+		</div> <!-- outer-wrapper -->
+	</body>
+</html>
