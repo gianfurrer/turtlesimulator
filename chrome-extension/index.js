@@ -110,12 +110,11 @@ function initInventory(inventory, values) {
 const directionEnum = { forward: 1, left: 2, back: 3, right: 4 };
 const output = document.querySelector("#output");
 function Simulator(program) {
-    const invElement = document.querySelector("#liveInventory");
-    this.inventory = generateInventory(invElement, 16);
+    this.inventory = liveInventory
     initInventory(
         this.inventory,
         startInventory.map(
-            s => [{ name: s.name.value, count: s.count.value }][0]
+            slot => [{ name: slot.name.value, count: slot.count.value }][0]
         )
     );
     this.blocks = [];
@@ -130,7 +129,7 @@ function Simulator(program) {
     this.luaWorker.onmessage = e => {
         output.textContent += e.data + "\n";
         this.executeAction(e.data);
-    });
+    };
     this.luaWorker.postMessage(program);
 
 
@@ -199,7 +198,9 @@ let startInventory;
 onload = () => {
     document.querySelector("#btn-execute").onclick = executeProgram;
     const startInventoryElement = document.querySelector("#startInventory");
+    const liveInventoryElement = document.querySelector("#liveInventory");
     startInventory = generateInventory(startInventoryElement, 16);
+    liveInventory = generateInventory(liveInventoryElement, 16);
     initInventory(startInventory, [
         { name: "minecraft:coal_block", count: 64 }
     ]);
