@@ -71,9 +71,7 @@ function getFileContent(fileName, callback) {
 async function executeProgram() {
     const args = getArgs();
     const program = getProgram(args);
-
-    window.simulator = new Simulator();
-    luaWorker.postMessage(program);
+    window.simulator = new Simulator(program);
 }
 
 function generateInventory(inventoryElement, slots) {
@@ -111,7 +109,7 @@ function initInventory(inventory, values) {
 
 const directionEnum = { forward: 1, left: 2, back: 3, right: 4 };
 const output = document.querySelector("#output");
-function Simulator() {
+function Simulator(program) {
     const invElement = document.querySelector("#liveInventory");
     this.inventory = generateInventory(invElement, 16);
     initInventory(
@@ -125,8 +123,16 @@ function Simulator() {
     this.fuelLevel = 0;
     this.x = this.y = this.z = 0;
     this.direction = directionEnum.forward;
-    this.programCounter = 0;
+
     output.innerHTML = "";
+
+    this.luaWorker = new Worker("lua-worker.js");
+    this.luaWorker.onmessage = e => {
+        output.textContent += e.data + "\n";
+        this.executeAction(e.data);
+    });
+    this.luaWorker.postMessage(program);
+
 
     this.executeAction = action => {
         const components = action.split(" ");
@@ -174,6 +180,7 @@ function Simulator() {
 
     this.end = () => {
         clearInterval(this.intervalId);
+        this.luaWorker.terminate();
     };
 
     this.dict = {
@@ -200,16 +207,6 @@ onload = () => {
 
 onerror = e => {
     if (e.startsWith('[string "..."]') || e.startsWith("uncaught exception")) {
-        document.querySelector("#errors").textContent = e
-            .split(":")
-            .splice(2)
-            .join(":")
-            .trim();
+        document.querySelector("#errors").textContent = e.split(":").splice(2).join(":").trim();
     }
 };
-
-const luaWorker = new Worker("lua-worker.js");
-luaWorker.addEventListener("message", e => {
-    output.textContent += e.data + "\n";
-    simulator.executeAction(e.data);
-});

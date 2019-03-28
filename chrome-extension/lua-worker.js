@@ -5,6 +5,6 @@ fengari = window.fengari;
 window.output = text => {
   self.postMessage(text);
 }
-self.addEventListener("message", m => {
+self.onmessage = m => {
   fengari.load(m.data)()
-})
+}
