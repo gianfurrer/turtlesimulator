@@ -13,7 +13,7 @@ function overrideLuaPrint(code) {
     return (
         'local js = require "js"\n\n\n\nfunction print(text)\njs.global:output(text)\nend\n\n' +
         code +
-        '\nprint("[end]")'
+        '\nprint("test [end]")'
     );
 }
 
@@ -109,6 +109,8 @@ function initInventory(inventory, values) {
 
 const directionEnum = { forward: 1, left: 2, back: 3, right: 4 };
 const output = document.querySelector("#output");
+const errorOutput = document.querySelector("#erorrs");
+
 function Simulator(program) {
     this.inventory = liveInventory
     initInventory(
@@ -122,6 +124,7 @@ function Simulator(program) {
     this.fuelLevel = 0;
     this.x = this.y = this.z = 0;
     this.direction = directionEnum.forward;
+    this.actions = []
 
     output.innerHTML = "";
 
@@ -135,8 +138,8 @@ function Simulator(program) {
 
     this.executeAction = action => {
         const components = action.split(" ");
-        const func = this.dict[components[0]];
-        func(...components.slice(1));
+        const func = this.dict[components[1]];
+        func(...components.slice(2));
     };
 
     this.setSelectedSlot = slot => {
@@ -177,6 +180,10 @@ function Simulator(program) {
         }
     };
 
+    this.error = text => {
+        errorOutput.value += text
+    }
+
     this.end = () => {
         clearInterval(this.intervalId);
         this.luaWorker.terminate();
@@ -190,7 +197,8 @@ function Simulator(program) {
         "[addBlock]": this.addBlock,
         "[addItemToInventory]": this.addItemToInventory,
         "[removeItemFromInventory]": this.removeItemFromInventory,
-        "[end]": this.end
+        "[error]": this.error,
+        "[end]": this.end,
     };
 }
 

@@ -31,7 +31,7 @@ if not turtle then
 
     function setFuelLevel(value) 
         fuelLevel = value 
-        print("[setFuelLevel] " .. value) 
+        printOutput({ "[setFuelLevel]", fuelLevel }) 
     end
 
     turtle.getSelectedSlot = function ()
@@ -42,7 +42,7 @@ if not turtle then
             return false
         end
         selectedSlot = slot
-        print("[select] " .. selectedSlot)
+        printOutput({ "[select]", selectedSlot })
         return true
     end
     turtle.getItemCount = function (slot) 
@@ -81,7 +81,7 @@ if not turtle then
 
     function moveBase(detectFunction, functionName)
         if fuelLevel < 1 then 
-            print("[error] No fuel") 
+            printOutput({ "[error]", "No fuel" }) 
             return false
         end 
         local success = not detectFunction() 
@@ -151,7 +151,7 @@ if not turtle then
         if count > inventory[selectedSlot].count  then
             count = inventory[selectedSlot].count 
         end
-        print("[drop] " .. count)
+        printOutput({ "[drop]", count })
         return true
     end
     turtle.dropUp = function (count) 
@@ -169,7 +169,7 @@ if not turtle then
             end
         end
         table.insert(blocks, { name = name, x = x, y = y, z = z })
-        print("[addBlock] " .. name .. " " .. x .. " " .. y .. " " .. z)
+        printOutput({ "[addBlock]", name, x, y, z })
     end
 
     function getBlockAtCoordinates(x, y, z)
@@ -186,7 +186,7 @@ if not turtle then
         for i = 1, 16 do
             if inventory[i].count < 64 and inventory[i].name == name then
                 inventory[i].count = inventory[i].count + 1
-                print("[addItemToInventory] " .. name .. " " ..i)
+                printOutput({ "[addItemToInventory]", name, i })
                 return true
             end
         end
@@ -194,7 +194,7 @@ if not turtle then
             if inventory[i].count == 0 then
                 inventory[i].name = name
                 inventory[i].count = 1
-                print("[addItemToInventory] " .. name .. " " .. i)
+                printOutput({ "[addItemToInventory]", name, i })
                 return true
             end
         end
@@ -205,7 +205,15 @@ if not turtle then
         quantity = quantity or turtle.getItemCount()
         if quantity > turtle.getItemCount() then quantity = turtle.getItemCount() end
         inventory[selectedSlot].count = inventory[selectedSlot].count - quantity
-        print("[removeItemFromInventory] " .. quantity)
+        printOutput({ "[removeItemFromInventory]", quantity })
+    end
+
+    function printOutput(components) 
+        local output = os.time()
+        for i = 1, #components do
+            output = output .. " " .. components[i]
+        end
+        print(output)
     end
 
     directionEnum = { forward = 1, left = 2, back = 3, right = 4 }
@@ -227,7 +235,7 @@ if not turtle then
             elseif currentDirection == directionEnum.back then currentZ = currentZ - 1
             elseif currentDirection == directionEnum.left then currentX = currentX - 1
             elseif currentDirection == directionEnum.right then currentX = currentX + 1 end
-            print("[move] " .. currentX .. " " .. currentY .. " " .. currentZ)
+            printOutput({ "[move]", currentX, currentY, currentZ })
         end 
     end
     turtle.back = function ()
@@ -236,33 +244,33 @@ if not turtle then
             elseif currentDirection == directionEnum.back then currentZ = currentZ + 1
             elseif currentDirection == directionEnum.left then currentX = currentX + 1
             elseif currentDirection == directionEnum.right then currentX = currentX - 1 end
-            print("[move] " .. currentX .. " " .. currentY .. " " .. currentZ)
+            printOutput({ "[move]", currentX, currentY, currentZ })
         end
     end
     turtle.up = function () 
         if up() then 
             currentY = currentY + 1
-            print("[move] " .. currentX .. " " .. currentY .. " " .. currentZ)
+            printOutput({ "[move]", currentX, currentY, currentZ })
         end 
     end
     turtle.down = function () 
         if down() then 
             currentY = currentY - 1
-            print("[move] " .. currentX .. " " .. currentY .. " " .. currentZ)
+            printOutput({ "[move]", currentX, currentY, currentZ })
         end 
     end
     turtle.turnLeft = function () 
         if turnLeft() then 
             if currentDirection == directionEnum.right then currentDirection = directionEnum.forward
             else currentDirection = currentDirection + 1 end
-            print("[turn] " .. currentDirection)
+            printOutput({ "[turn]", currentDirection })
         end 
     end
     turtle.turnRight = function () 
         if turnRight() then
             if currentDirection == directionEnum.forward then currentDirection = directionEnum.right
             else currentDirection = currentDirection - 1 end
-            print("[turn] " .. currentDirection)
+            print({ "[turn]", currentDirection })
         end 
     end
 
