@@ -24,5 +24,6 @@
     },
     "web_accessible_resources": [
       "simulator.lua"
-    ]
+    ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
   }
