@@ -2,7 +2,8 @@ if not turtle then
 
     turtle = {}
 
-    blocks = {}
+    local blocks = {}
+    local droppedItems = {}
 
     local defaultBlock = "minecraft:cobblestone"
 
@@ -32,10 +33,6 @@ if not turtle then
         fuelLevel = value 
         print("[setFuelLevel] " .. value) 
     end
-    function setSelectedSlot(value) 
-        selectedSlot = value 
-        print("[setSelectedSlot] " .. value) 
-    end
 
     turtle.getSelectedSlot = function ()
             return selectedSlot 
@@ -44,7 +41,8 @@ if not turtle then
         if slot < 1 or slot > 16 then
             return false
         end
-        setSelectedSlot(slot)
+        selectedSlot = slot
+        print("[select] " .. selectedSlot)
         return true
     end
     turtle.getItemCount = function (slot) 
@@ -83,10 +81,12 @@ if not turtle then
 
     function moveBase(detectFunction, functionName)
         if fuelLevel < 1 then 
-            error("No fuel") 
-        end  
-        setFuelLevel(fuelLevel - 1)
-        return not detectFunction()
+            print("[error] No fuel") 
+            return false
+        end 
+        local success = not detectFunction() 
+        if success then setFuelLevel(fuelLevel - 1) end
+        return success
     end
 
     turtle.forward = function () return moveBase(turtle.detect) end
@@ -96,7 +96,7 @@ if not turtle then
     turtle.turnLeft = function () return true end
     turtle.turnRight = function () return true end
 
-    function digBase(inspectFunction, getCoordinatesFunction, functionName)
+    function digBase(inspectFunction, getCoordinatesFunction)
         local success, data = inspectFunction()
         if not success then
             return false 
@@ -107,30 +107,30 @@ if not turtle then
         return true
     end
 
-    turtle.dig = function () return digBase(turtle.inspect, getCoordinatesInFront, "dig") end
-    turtle.digUp = function () return digBase(turtle.inspectUp, getCoordinatesAbove, "digUp") end
-    turtle.digDown = function () return digBase(turtle.inspectDown, getCoordinatesBeneath, "digDown") end
+    turtle.dig = function () return digBase(turtle.inspect, getCoordinatesInFront) end
+    turtle.digUp = function () return digBase(turtle.inspectUp, getCoordinatesAbove) end
+    turtle.digDown = function () return digBase(turtle.inspectDown, getCoordinatesBeneath) end
 
-    function detectBase(inspectFunction, functionName) 
+    function detectBase(inspectFunction) 
         local success, data = inspectFunction()
         return success
     end
 
-    turtle.detect = function () return detectBase(turtle.inspect, "detect") end
-    turtle.detectUp = function () return detectBase(turtle.inspectUp, "detectUp") end
-    turtle.detectDown = function () return detectBase(turtle.inspectDown, "detectDown") end
-    function detectBack() return detectBase(inspectBack, "inspectBack") end
+    turtle.detect = function () return detectBase(turtle.inspect) end
+    turtle.detectUp = function () return detectBase(turtle.inspectUp) end
+    turtle.detectDown = function () return detectBase(turtle.inspectDown) end
+    function detectBack() return detectBase(inspectBack) end
 
-    function inspectBase(getCoordinatesFunction, functionName)
+    function inspectBase(getCoordinatesFunction)
         local x, y, z = getCoordinatesFunction()
         local success, name = getBlockAtCoordinates(x, y, z)
         return success, { name = name }
     end
 
-    turtle.inspect = function () return inspectBase(getCoordinatesInFront, "inspect") end
-    turtle.inspectUp = function () return inspectBase(getCoordinatesAbove, "inspectUp") end
-    turtle.inspectDown = function () return inspectBase(getCoordinatesBeneath, "inspectDown") end
-    function inspectBack() return inspectBase(getCoordinatesBehind, "inspectBack") end
+    turtle.inspect = function () return inspectBase(getCoordinatesInFront) end
+    turtle.inspectUp = function () return inspectBase(getCoordinatesAbove) end
+    turtle.inspectDown = function () return inspectBase(getCoordinatesBeneath) end
+    function inspectBack() return inspectBase(getCoordinatesBehind) end
 
     function placeBase(detectFunction, getCoordinatesFunction)
         if detectFunction() or turtle.getItemCount() == 0 then 

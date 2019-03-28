@@ -1,32 +1,47 @@
-
 let simulatorCode;
-this.simulator = {addAction: te => {console.log(te)}}
+this.simulator = {
+    addAction: te => {
+        console.log(te);
+    }
+};
 
-getFileContent("simulator.lua", (content) => {
+getFileContent("simulator.lua", content => {
     simulatorCode = content;
-})
+});
 
 function overrideLuaPrint(code) {
-  return 'local js = require "js"\n\n\n\nfunction print(text)\njs.global:output(text)\nend\n\n'+code+'\nprint("[end]")';
+    return (
+        'local js = require "js"\n\n\n\nfunction print(text)\njs.global:output(text)\nend\n\n' +
+        code +
+        '\nprint("[end]")'
+    );
 }
 
 function getProgram(args) {
-    return overrideLuaPrint(getArgsCode(args) + "\n" + simulatorCode + "\n" + getInventoryCode(startInventory) + "\n" + document.querySelector("#input").value);
+    return overrideLuaPrint(
+        getArgsCode(args) +
+            "\n" +
+            simulatorCode +
+            "\n" +
+            getInventoryCode(startInventory) +
+            "\n" +
+            document.querySelector("#input").value
+    );
 }
 
 function getArgsCode(args) {
-    let argsCode = ""
+    let argsCode = "";
     if (args) {
         for (let i = 0; i < args.length; i++) {
-            argsCode += `arg[${i + 1}] = "${args[i]}"\n`
+            argsCode += `arg[${i + 1}] = "${args[i]}"\n`;
         }
     }
 
-    return argsCode
+    return argsCode;
 }
 
 function getArgs() {
-    const args = document.querySelector("#args").value
+    const args = document.querySelector("#args").value;
     return args.match(/(?<=(['"]).)(?:(?!\1|\\).|\\.)*(?=\1)|(\w+)/g);
 }
 
@@ -34,7 +49,9 @@ function getInventoryCode(inventory) {
     let inventoryCode = "inventory = {\n";
     for (let i = 0; i < inventory.length; i++) {
         const slot = inventory[i];
-        inventoryCode += `{ name = "${slot.name.value}", count = ${slot.count.value} },\n`;
+        inventoryCode += `{ name = "${slot.name.value}", count = ${
+            slot.count.value
+        } },\n`;
     }
     inventoryCode += "}\n";
     return inventoryCode;
@@ -63,7 +80,7 @@ function generateInventory(inventoryElement, slots) {
     inventoryElement.innerHTML = "";
     const inventory = [];
     for (let i = 0; i < slots; i++) {
-        const slot = {}
+        const slot = {};
         const inventorySlot = document.createElement("div");
         inventorySlot.id = `inventory-slot-${i + 1}`;
 
@@ -86,101 +103,89 @@ function generateInventory(inventoryElement, slots) {
 }
 
 function initInventory(inventory, values) {
-  for (let i = 0; i < values.length && inventory[i]; ++i) {
-    inventory[i].name.value = values[i].name
-    inventory[i].count.value = values[i].count
-  }
+    for (let i = 0; i < values.length && inventory[i]; ++i) {
+        inventory[i].name.value = values[i].name;
+        inventory[i].count.value = values[i].count;
+    }
 }
 
 const directionEnum = { forward: 1, left: 2, back: 3, right: 4 };
 const output = document.querySelector("#output");
 function Simulator() {
-  const invElement = document.querySelector("#liveInventory")
-  this.inventory = generateInventory(invElement, 16);
-  initInventory(this.inventory, startInventory.map(s => [{name: s.name.value, count: s.count.value}][0]));
-  this.blocks = [];
-  this.selectedSlot = 1;
-  this.fuelLevel = 0;
-  this.x = this.y = this.z = 0;
-  this.direction = directionEnum.forward;
-  this.programCounter = 0;
-  output.innerHTML = "";
+    const invElement = document.querySelector("#liveInventory");
+    this.inventory = generateInventory(invElement, 16);
+    initInventory(
+        this.inventory,
+        startInventory.map(
+            s => [{ name: s.name.value, count: s.count.value }][0]
+        )
+    );
+    this.blocks = [];
+    this.selectedSlot = 1;
+    this.fuelLevel = 0;
+    this.x = this.y = this.z = 0;
+    this.direction = directionEnum.forward;
+    this.programCounter = 0;
+    output.innerHTML = "";
 
-  this.executeAction = action => {
-    const components = action.split(" ");
-    const func = this.dict[components[0]];
-    func(...components.slice(1));
-  }
+    this.executeAction = action => {
+        const components = action.split(" ");
+        const func = this.dict[components[0]];
+        func(...components.slice(1));
+    };
 
-  this.setSelectedSlot = (slot) => {
-      this.selectedSlot = parseInt(slot)
-  }
+    this.setSelectedSlot = slot => {
+        this.selectedSlot = parseInt(slot);
+    };
 
-  this.setFuelLevel = (value) => {
-      this.fuelLevel = parseInt(value)
-      document.querySelector("#fuel-level").textContent = this.fuelLevel
-  }
+    this.setFuelLevel = value => {
+        this.fuelLevel = parseInt(value);
+        document.querySelector("#fuel-level").textContent = this.fuelLevel;
+    };
 
-  this.forward = () => {
-      if (this.direction == directionEnum.forward) { z += 1 }
-      else if (this.direction == directionEnum.back) { z -= 1 }
-      else if (this.direction == directionEnum.left) { x -= 1 }
-      else if (this.direction == directionEnum.right) { x += 1}
-  }
+    this.move = (x, y, z) => {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    };
 
-  this.back = () => {
-      if (this.direction == directionEnum.forward) { z -= 1 }
-      else if (this.direction == directionEnum.back) { z += 1 }
-      else if (this.direction == directionEnum.left) { x += 1 }
-      else if (this.direction == directionEnum.right) { x -= 1}
-  }
+    this.turn = direction => {
+        this.direction = direction;
+    };
 
-  this.up = () => {
-      this.y += 1
-  }
+    this.addBlock = (name, x, y, z) => {
+        this.blocks.push({ name: name, x: x, y: y, z: z });
+    };
 
-  this.down = () => {
-      this.y -= 1
-  }
+    this.addItemToInventory = (name, slot) => {
+        const inventorySlot = this.inventory[slot - 1];
+        if (inventorySlot.name.value == "") {
+            inventorySlot.name.value = name;
+        }
+        inventorySlot.count.value = parseInt(inventorySlot.count.value) + 1;
+    };
 
-  this.turnLeft = () => {
-      if (this.direction == directionEnum.right) { this.direction = direction.forward }
-      else (this.direction += 1)
-  }
+    this.removeItemFromInventory = quantity => {
+        this.inventory[this.selectedSlot - 1].count.value -= quantity;
+        if (this.inventory[this.selectedSlot - 1].count.value == 0) {
+            this.inventory[this.selectedSlot - 1].name.value = "";
+        }
+    };
 
-  this.turnRight = () => {
-      if (this.direction == directionEnum.forward) { this.direction = direction.right }
-      else (this.direction -= 1)
-  }
+    this.end = () => {
+        clearInterval(this.intervalId);
+    };
 
-  this.addBlock = (name, x, y, z) => {
-      this.blocks.push({ name: name, x: x, y: y, z: z })
-  }
-
-  this.addItemToInventory = (name, slot) => {
-      const inventorySlot = this.inventory[slot - 1];
-      if (inventorySlot.name.value == "")
-      {
-          inventorySlot.name.value = name;
-      }
-      inventorySlot.count.value = 0;
-  }
-
-  this.removeItemFromInventory = (quantity) => {
-      this.inventory[this.selectedSlot - 1].count.value -= quantity
-  }
-
-  this.end = () => {
-    clearInterval(this.intervalId);
-  }
-
-  this.dict = {
-      "[setSelectedSlot]": this.setSelectedSlot, "[setFuelLevel]": this.setFuelLevel,
-      "[forward]": this.forward, "[up]": this.up, "[down]": this.down, "[back]": this.back,
-      "[turnLeft]": this.turnLeft, "[turnRight]": this.turnRight,
-      "[addBlock]": this.addBlock, "[addItemToInventory]": this.addItemToInventory, "[removeItemFromInventory]": this.removeItemFromInventory,
-      "[end]": this.end
-  };
+    this.dict = {
+        "[select]": this.setSelectedSlot,
+        "[setFuelLevel]": this.setFuelLevel,
+        "[move]": this.move,
+        "[turn]": this.turn,
+        "[addBlock]": this.addBlock,
+        "[addItemToInventory]": this.addItemToInventory,
+        "[removeItemFromInventory]": this.removeItemFromInventory,
+        "[end]": this.end
+    };
 }
 
 let startInventory;
@@ -188,17 +193,23 @@ onload = () => {
     document.querySelector("#btn-execute").onclick = executeProgram;
     const startInventoryElement = document.querySelector("#startInventory");
     startInventory = generateInventory(startInventoryElement, 16);
-    initInventory(startInventory, [{name: "minecraft:coal_block", count: 64}]);
-}
+    initInventory(startInventory, [
+        { name: "minecraft:coal_block", count: 64 }
+    ]);
+};
 
 onerror = e => {
-  if (e.startsWith('[string "..."]') || e.startsWith("uncaught exception")) {
-    document.querySelector("#errors").textContent = e.split(":").splice(2).join(":").trim();
-  }
-}
+    if (e.startsWith('[string "..."]') || e.startsWith("uncaught exception")) {
+        document.querySelector("#errors").textContent = e
+            .split(":")
+            .splice(2)
+            .join(":")
+            .trim();
+    }
+};
 
 const luaWorker = new Worker("lua-worker.js");
 luaWorker.addEventListener("message", e => {
-  output.textContent += e.data + "\n";
-  simulator.executeAction(e.data);
+    output.textContent += e.data + "\n";
+    simulator.executeAction(e.data);
 });
