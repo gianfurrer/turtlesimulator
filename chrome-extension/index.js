@@ -23,18 +23,17 @@ function getProgram(args) {
 }
 
 function getArgsCode(args) {
-    let argsCode = ""
+    let argsCode = "";
     if (args) {
         for (let i = 0; i < args.length; i++) {
-            argsCode += `arg[${i + 1}] = "${args[i]}"\n`
+            argsCode += `arg[${i + 1}] = "${args[i]}"\n`;
         }
     }
-
-    return argsCode
+    return argsCode;
 }
 
 function getArgs() {
-    const args = document.querySelector("#args").value
+    const args = document.querySelector("#args").value;
     return args.match(/(?<=(['"]).)(?:(?!\1|\\).|\\.)*(?=\1)|(\w+)/g);
 }
 
@@ -60,13 +59,13 @@ function getFileContent(fileName, callback) {
 }
 
 function executeProgram() {
-    const args = getArgs()
-    const program = getProgram(args)
+    const args = getArgs();
+    const program = getProgram(args);
     runLua(program, (response) => {
         document.querySelector("#output").value = response.Result;
         document.querySelector("#errors").value = response.Errors;
         document.querySelector("#warnings").value = response.Warnings;
-        simulate(response.Result)
+        simulate(response.Result);
     });
 }
 
