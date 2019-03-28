@@ -86,17 +86,15 @@ if not turtle then
             error("No fuel") 
         end  
         setFuelLevel(fuelLevel - 1)
-        success = not detectFunction()
-        if success then print("[" .. functionName .. "]") end
-        return success
+        return not detectFunction()
     end
 
-    turtle.forward = function () return moveBase(turtle.detect, "forward") end
-    turtle.up = function () return moveBase(turtle.detectUp, "up") end
-    turtle.down = function () return moveBase(turtle.detectDown, "down") end
-    turtle.back = function () return moveBase(detectBack, "back") end
-    turtle.turnLeft = function () print("[turnLeft]") return true end
-    turtle.turnRight = function () print("[turnRight]") return true end
+    turtle.forward = function () return moveBase(turtle.detect) end
+    turtle.up = function () return moveBase(turtle.detectUp) end
+    turtle.down = function () return moveBase(turtle.detectDown) end
+    turtle.back = function () return moveBase(detectBack) end
+    turtle.turnLeft = function () return true end
+    turtle.turnRight = function () return true end
 
     function digBase(inspectFunction, getCoordinatesFunction, functionName)
         local success, data = inspectFunction()
@@ -229,6 +227,7 @@ if not turtle then
             elseif currentDirection == directionEnum.back then currentZ = currentZ - 1
             elseif currentDirection == directionEnum.left then currentX = currentX - 1
             elseif currentDirection == directionEnum.right then currentX = currentX + 1 end
+            print("[move] " .. currentX .. " " .. currentY .. " " .. currentZ)
         end 
     end
     turtle.back = function ()
@@ -237,28 +236,33 @@ if not turtle then
             elseif currentDirection == directionEnum.back then currentZ = currentZ + 1
             elseif currentDirection == directionEnum.left then currentX = currentX + 1
             elseif currentDirection == directionEnum.right then currentX = currentX - 1 end
+            print("[move] " .. currentX .. " " .. currentY .. " " .. currentZ)
         end
     end
     turtle.up = function () 
         if up() then 
             currentY = currentY + 1
+            print("[move] " .. currentX .. " " .. currentY .. " " .. currentZ)
         end 
     end
     turtle.down = function () 
         if down() then 
             currentY = currentY - 1
+            print("[move] " .. currentX .. " " .. currentY .. " " .. currentZ)
         end 
     end
     turtle.turnLeft = function () 
         if turnLeft() then 
             if currentDirection == directionEnum.right then currentDirection = directionEnum.forward
             else currentDirection = currentDirection + 1 end
+            print("[turn] " .. currentDirection)
         end 
     end
     turtle.turnRight = function () 
         if turnRight() then
             if currentDirection == directionEnum.forward then currentDirection = directionEnum.right
             else currentDirection = currentDirection - 1 end
+            print("[turn] " .. currentDirection)
         end 
     end
 
