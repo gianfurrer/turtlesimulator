@@ -124,7 +124,7 @@ function Simulator(program) {
     this.fuelLevel = 0;
     this.x = this.y = this.z = 0;
     this.direction = directionEnum.forward;
-    this.actions = []
+    this.states = [];
 
     output.innerHTML = "";
 
@@ -140,7 +140,35 @@ function Simulator(program) {
         const components = action.split(" ");
         const func = this.dict[components[1]];
         func(...components.slice(2));
+        this.saveState(action)
+        document.querySelector("#state").max = this.states.length - 1;
     };
+
+    this.saveState = action => {
+        this.states.push({
+            action: action,
+            inventory: Object.create(Object.getPrototypeOf(this.inventory)),
+            blocks: Object.create(Object.getPrototypeOf(this.blocks)),
+            selectedSlot: this.selectedSlot,
+            fuelLevel: this.fuelLevel,
+            x: this.x,
+            y: this.y,
+            z: this.z,
+            direction: this.direction
+        });
+    }
+
+    this.applyState = index => {
+        const state = this.states[index];
+        this.inventory = state.inventory;
+        this.blocks = state.blocks;
+        this.selectedSlot = state.selectedSlot;
+        this.fuelLevel = state.fuelLevel;
+        this.x = state.x;
+        this.y = state.y;
+        this.z = state.z;
+        this.direction = state.direction;
+    }
 
     this.setSelectedSlot = slot => {
         this.selectedSlot = parseInt(slot);
