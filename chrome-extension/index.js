@@ -126,6 +126,7 @@ function Simulator(program) {
     this.direction = directionEnum.forward;
     this.states = [];
 
+
     output.innerHTML = "";
 
     this.luaWorker = new Worker("lua-worker.js");
@@ -135,20 +136,21 @@ function Simulator(program) {
     };
     this.luaWorker.postMessage(program);
 
-
     this.executeAction = action => {
         const components = action.split(" ");
         const func = this.dict[components[1]];
         func(...components.slice(2));
         this.saveState(action)
-        document.querySelector("#state").max = this.states.length - 1;
     };
+
+    const stateElement = document.querySelector("#state");
+    stateElement.oninput = e => this.applyState(e.target.value);
 
     this.saveState = action => {
         this.states.push({
             action: action,
-            inventory: Object.create(Object.getPrototypeOf(this.inventory)),
-            blocks: Object.create(Object.getPrototypeOf(this.blocks)),
+            inventory: this.inventory.map(i => [{name: i.name.value, count: i.count.value}][0]),
+            blocks: JSON.parse(JSON.stringify(this.blocks)),
             selectedSlot: this.selectedSlot,
             fuelLevel: this.fuelLevel,
             x: this.x,
@@ -156,27 +158,48 @@ function Simulator(program) {
             z: this.z,
             direction: this.direction
         });
+        stateElement.max = this.states.length - 1;
+        stateElement.value = this.states.length - 1;
     }
+
+    this.saveState("[Initial]")
 
     this.applyState = index => {
         const state = this.states[index];
-        this.inventory = state.inventory;
+        for (let i = 0; i < this.inventory.length; i++) {
+            this.inventory[i].name.value = state.inventory[i].name;
+            this.inventory[i].count.value = state.inventory[i].count;
+        }
         this.blocks = state.blocks;
-        this.selectedSlot = state.selectedSlot;
-        this.fuelLevel = state.fuelLevel;
+        this.setSelectedSlot(state.selectedSlot);
+        this.setFuelLevel(state.fuelLevel);
         this.x = state.x;
         this.y = state.y;
         this.z = state.z;
         this.direction = state.direction;
+        stateElement.value = index;
     }
 
+    this.play = () => {
+        const timeout = document.querySelector("#timeout").value;
+        for (let i = stateElement.value; i < this.states.length; i++) {
+            setTimeout(() => {
+                this.applyState(i);
+            }, timeout)
+        }
+    };
+    document.querySelector("#play").onclick = this.play;
+
+    const selectedSlotElement = document.querySelector("#selected-slot");
     this.setSelectedSlot = slot => {
         this.selectedSlot = parseInt(slot);
+        selectedSlotElement.textContent = this.selectedSlot;
     };
 
+    const fuelLevelElement = document.querySelector("#fuel-level")
     this.setFuelLevel = value => {
         this.fuelLevel = parseInt(value);
-        document.querySelector("#fuel-level").textContent = this.fuelLevel;
+        fuelLevelElement.textContent = this.fuelLevel;
     };
 
     this.move = (x, y, z) => {
