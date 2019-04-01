@@ -182,11 +182,15 @@ function Simulator(program) {
 
     this.play = () => {
         const timeout = document.querySelector("#timeout").value;
-        for (let i = stateElement.value; i < this.states.length; i++) {
-            setTimeout(() => {
-                this.applyState(i);
-            }, timeout)
-        }
+        let i = stateElement.value;
+        const intervalId = setInterval(() => {
+          if (i < this.states.length) {
+            this.applyState(i++);
+          }
+          else {
+            clearInterval(intervalId);
+          }
+        }, timeout);
     };
     document.querySelector("#play").onclick = this.play;
 
