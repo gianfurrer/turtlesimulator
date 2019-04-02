@@ -76,12 +76,13 @@ function Simulator3D(domWrapper) {
 	this.opacity = alphavalue.value;
 	this.object = new THREE.Object3D;
 	this.Canvas = new THREE.WebGLRenderer({ antialias: true });
+	const width = container.offsetWidth;
+	const height = container.offsetHeight;
 	this.Camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
 	this.Controls = new THREE.OrbitControls(this.Camera, this.Canvas.domElement);
 	this.Scene = new THREE.Scene;
 
 	//Init Variables
-
 	this.Canvas.setSize(width, height),
 	this.Camera.position.z = 3.5,
 	this.Camera.position.y = 5,
