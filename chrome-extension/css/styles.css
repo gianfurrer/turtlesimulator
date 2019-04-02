@@ -1,27 +1,4 @@
- #main-content {
-    font-family: Arial,sans_serif;
-	position:relative;
-    width: 95%;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding-left: 5%;
-}
-.formelblock {
-	width:100%;
-}
-
-textarea#val_drawings {
-	border:1px solid #DDD;
-	padding:5px;
-	max-width:100%;
-	width:100%;
-	height:125px;
-	display:inline-block;
-	background:#FFC;
-}
-
-
-#val_alpha {
+.val_alpha {
 	display: inline-block;
 	width: 20px;
 	border: 1px solid #EEE;
@@ -31,13 +8,12 @@ textarea#val_drawings {
 	color:#333;
 }
 
-
-#rendercanvas {
+.rendercanvas {
 	width: 100%;
     height: 100%;
 }
 
-#fullscreen {
+.fullscreen {
 	float:right;
 	font-size:12px;
 	padding:10px 0 0 0;
@@ -45,7 +21,6 @@ textarea#val_drawings {
 	border-bottom:1px dotted #CCD;
 	cursor:pointer;
 }
-
 
 .wrapper3d {
 	height:600px;
@@ -78,17 +53,17 @@ textarea#val_drawings {
 	background:rgba(0,0,0,0.1) !important;
 	overflow: hidden;
 }
-#fullscreenbtn {
+.fullscreenbtn {
     position: absolute;
     top: 5px;
     right: 10px;
 	cursor:pointer;
 	color:#555;
 }
-#fullscreenbtn:hover {
+.fullscreenbtn:hover {
 	color:#111;
 }
-#fullscreenbtn-close {
+.fullscreenbtn-close {
 	display:none;
     position: fixed;
     top: 3px;
@@ -100,45 +75,17 @@ textarea#val_drawings {
 	cursor:pointer;
 	color:#555;
 }
-#fullscreenbtn-close:hover {
+.fullscreenbtn-close:hover {
 	color:#111;
 }
 
 @media only screen and (max-width:540px)
 {
-	.lang-dropdown {
-		position:absolute;
-		top:-40px;
-		right:-15px;
-		margin-top:0;
-	}
-	.itemblock {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
-	.formelblock {
-		width:95%;
-	}
-	textarea#val_drawings,
-	#additionals {
-		width:100%;
-		padding:5px;
-	}
-	#memvaluelink {
-		display:none;
-	}
 	.wrapper3d {
 		width:100%;
 		margin-top:20px;
 	}
 	.wrapper3dinner {
 		height:400px;
-	}
-	#main-content {
-		padding-right: 2%;
-	}
-	#main-content h3 {
-		width:100%;
 	}
 }
