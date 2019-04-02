@@ -1,9 +1,10 @@
-var itemsElement = document.querySelector("#items");
+const itemsElement = document.querySelector("#items");
 items.forEach(item => {
     const wrapper = document.createElement("div");
     wrapper.id = item.value;
     wrapper.value = item.value;
     wrapper.label = item.label;
+    wrapper.backgroundCss = item.backgroundCss;
     wrapper.classList.add("item");
 
     const image = document.createElement("div");
@@ -12,7 +13,7 @@ items.forEach(item => {
 
     const tooltip = document.createElement("span");
     tooltip.classList.add("item-tooltip");
-    tooltip.innerText = item.label;
+    tooltip.innerText = item.label + " (" + item.value + ")";
 
     wrapper.appendChild(image);
     wrapper.appendChild(tooltip);
@@ -30,3 +31,4 @@ itemSearch.onkeyup = itemSearch.onchange = e => {
         }
     });
 };
+
