@@ -29,13 +29,13 @@ if not turtle then
     local selectedSlot = 1
 
 
-    function setFuelLevel(value) 
-        fuelLevel = value 
-        printOutput({ "[setFuelLevel]", fuelLevel }) 
+    function setFuelLevel(value)
+        fuelLevel = value
+        printOutput({ "[setFuelLevel]", fuelLevel })
     end
 
     turtle.getSelectedSlot = function ()
-            return selectedSlot 
+            return selectedSlot
     end
     turtle.select = function (slot)
         if slot < 1 or slot > 16 then
@@ -45,7 +45,7 @@ if not turtle then
         printOutput({ "[select]", selectedSlot })
         return true
     end
-    turtle.getItemCount = function (slot) 
+    turtle.getItemCount = function (slot)
         slot = slot or selectedSlot
         local count = inventory[slot].count
         return count
@@ -56,11 +56,11 @@ if not turtle then
         return { name = name, count = count }
     end
 
-    turtle.getFuelLevel = function () 
-        return fuelLevel 
+    turtle.getFuelLevel = function ()
+        return fuelLevel
     end
-    turtle.getFuelLimit = function () 
-        return fuelLimit 
+    turtle.getFuelLimit = function ()
+        return fuelLimit
     end
     turtle.refuel = function (quantity)
         quantity = quantity or inventory[selectedSlot].count
@@ -72,7 +72,7 @@ if not turtle then
         if quantity > inventory[selectedSlot].count then
             quantity = inventory[selectedSlot].count
         end
-        
+
         removeItemFromInventory(quantity)
         local fuelLevel = (fuelLevel + (quantity * fuelItems[name]))
         if fuelLevel > fuelLimit then setFuelLevel(fuelLimit) else setFuelLevel(fuelLevel) end
@@ -80,11 +80,11 @@ if not turtle then
     end
 
     function moveBase(detectFunction, functionName)
-        if fuelLevel < 1 then 
-            printOutput({ "[error]", "No fuel" }) 
+        if fuelLevel < 1 then
+            printOutput({ "[error]", "No fuel" })
             return false
-        end 
-        local success = not detectFunction() 
+        end
+        local success = not detectFunction()
         if success then setFuelLevel(fuelLevel - 1) end
         return success
     end
@@ -99,7 +99,7 @@ if not turtle then
     function digBase(inspectFunction, getCoordinatesFunction)
         local success, data = inspectFunction()
         if not success then
-            return false 
+            return false
         end
         local x, y, z = getCoordinatesFunction()
         addBlock("minecraft:air", x, y, z)
@@ -111,7 +111,7 @@ if not turtle then
     turtle.digUp = function () return digBase(turtle.inspectUp, getCoordinatesAbove) end
     turtle.digDown = function () return digBase(turtle.inspectDown, getCoordinatesBeneath) end
 
-    function detectBase(inspectFunction) 
+    function detectBase(inspectFunction)
         local success, data = inspectFunction()
         return success
     end
@@ -133,7 +133,7 @@ if not turtle then
     function inspectBack() return inspectBase(getCoordinatesBehind) end
 
     function placeBase(detectFunction, getCoordinatesFunction)
-        if detectFunction() or turtle.getItemCount() == 0 then 
+        if detectFunction() or turtle.getItemCount() == 0 then
             return false
         end
         local x, y, z = getCoordinatesFunction()
@@ -146,18 +146,18 @@ if not turtle then
     turtle.placeUp = function () return placeBase(turtle.detectUp, getCoordinatesAbove) end
     turtle.placeDown = function () return placeBase(turtle.detectDown, getCoordinatesBeneath) end
 
-    turtle.drop = function (count) 
-        count = count or inventory[selectedSlot].count 
+    turtle.drop = function (count)
+        count = count or inventory[selectedSlot].count
         if count > inventory[selectedSlot].count  then
-            count = inventory[selectedSlot].count 
+            count = inventory[selectedSlot].count
         end
         printOutput({ "[drop]", count })
         return true
     end
-    turtle.dropUp = function (count) 
+    turtle.dropUp = function (count)
         return turtle.drop(count)
     end
-    turtle.dropDown = function (count) 
+    turtle.dropDown = function (count)
         return turtle.drop(count)
     end
 
@@ -182,7 +182,7 @@ if not turtle then
         return true, defaultBlock
     end
 
-    function addItemToInventory(name) 
+    function addItemToInventory(name)
         for i = 1, 16 do
             if inventory[i].count < 64 and inventory[i].name == name then
                 inventory[i].count = inventory[i].count + 1
@@ -208,7 +208,7 @@ if not turtle then
         printOutput({ "[removeItemFromInventory]", quantity })
     end
 
-    function printOutput(components) 
+    function printOutput(components)
         local output = os.time()
         for i = 1, #components do
             output = output .. " " .. components[i]
@@ -229,14 +229,14 @@ if not turtle then
     local turnLeft = turtle.turnLeft
     local turnRight = turtle.turnRight
 
-    turtle.forward = function () 
-        if forward() then 
+    turtle.forward = function ()
+        if forward() then
             if currentDirection == directionEnum.forward then currentZ = currentZ + 1
             elseif currentDirection == directionEnum.back then currentZ = currentZ - 1
             elseif currentDirection == directionEnum.left then currentX = currentX - 1
             elseif currentDirection == directionEnum.right then currentX = currentX + 1 end
             printOutput({ "[move]", currentX, currentY, currentZ })
-        end 
+        end
     end
     turtle.back = function ()
         if back() then
@@ -247,31 +247,31 @@ if not turtle then
             printOutput({ "[move]", currentX, currentY, currentZ })
         end
     end
-    turtle.up = function () 
-        if up() then 
+    turtle.up = function ()
+        if up() then
             currentY = currentY + 1
             printOutput({ "[move]", currentX, currentY, currentZ })
-        end 
+        end
     end
-    turtle.down = function () 
-        if down() then 
+    turtle.down = function ()
+        if down() then
             currentY = currentY - 1
             printOutput({ "[move]", currentX, currentY, currentZ })
-        end 
+        end
     end
-    turtle.turnLeft = function () 
-        if turnLeft() then 
+    turtle.turnLeft = function ()
+        if turnLeft() then
             if currentDirection == directionEnum.right then currentDirection = directionEnum.forward
             else currentDirection = currentDirection + 1 end
             printOutput({ "[turn]", currentDirection })
-        end 
+        end
     end
-    turtle.turnRight = function () 
+    turtle.turnRight = function ()
         if turnRight() then
             if currentDirection == directionEnum.forward then currentDirection = directionEnum.right
             else currentDirection = currentDirection - 1 end
-            print({ "[turn]", currentDirection })
-        end 
+            printOutput({ "[turn]", currentDirection })
+        end
     end
 
     function getCoordinatesInFront()
@@ -302,7 +302,7 @@ if not turtle then
 
     -- function turnToDirection(targetDirection)
     --     directionDifference = currentDirection - targetDirection
-    --     if directionDifference > 0 then 
+    --     if directionDifference > 0 then
     --         for i = 1, directionDifference do turtle.turnRight() end
     --     else
     --         for i = directionDifference, -1 do turtle.turnLeft() end
