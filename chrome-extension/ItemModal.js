@@ -1,7 +1,9 @@
 function ItemModal(slot) {
+    this.slot = slot;
+    this.modal;
 
     this.init = () => {
-        var modalElement = document.createElement("div");
+        this.modal = document.createElement("div");
 
         const itemsElement = document.createElement("div");
         items.forEach(item => {
@@ -25,7 +27,6 @@ function ItemModal(slot) {
             wrapper.onclick = this.onItemClicked;
             itemsElement.appendChild(wrapper);
         });
-        modalElement.appendChild(itemsElement);
 
         const queryElement = document.createElement("input");
         queryElement.type = "text";
@@ -39,27 +40,29 @@ function ItemModal(slot) {
                 }
             });
         };
-        modalElement.appendChild(queryElement);
-        document.querySelector("main").appendChild(modalElement);
+
+        this.modal.appendChild(queryElement);
+        this.modal.appendChild(itemsElement);
     }
 
     this.onItemClicked = e => {
-        slot.name.value = e.currentTarget.value;
+        this.slot.nameElement.value = e.currentTarget.value;
+        this.slot.imageElement.style.background = e.currentTarget.backgroundCss;
         this.close()
     }
 
     this.open = () => {
-        document.querySelector("main").appendChild(modalElement);
+        document.querySelector("main").appendChild(this.modal);
     }
 
     this.close = () => {
-        modalElement.remove();
+        this.modal.remove()
     }
 
-    this.slot = slot;
     this.init();
 }
 
-const openItemModal = slot => {
-    const modal = new ItemModal(slot);
+const openItemModal = e => {
+    const modal = new ItemModal(e.currentTarget);
+    modal.open();
 }

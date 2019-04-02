@@ -30,12 +30,4 @@ textarea {
 .inventory-slot-image {
     width: 32px;
     height: 32px;
-    background: rgba(0, 0, 0, 0) url("/assets/images/items.png") no-repeat scroll -32px 0px / auto padding-box border-box;
-}
-
-.inventory-slot-count {
-    position: absolute;
-    transform: translateX(90%) translateY(-70%);
-    color: white;
-    background-color: black;
 }

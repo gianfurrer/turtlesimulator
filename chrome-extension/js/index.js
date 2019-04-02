@@ -52,8 +52,8 @@ function getInventoryCode(inventory) {
     let inventoryCode = "inventory = {\n";
     for (let i = 0; i < inventory.length; i++) {
         const slot = inventory[i];
-        inventoryCode += `{ name = "${slot.name.value}", count = ${
-            slot.count.value
+        inventoryCode += `{ name = "${slot.nameElement.value}", count = ${
+            slot.countElement.value
         } },\n`;
     }
     inventoryCode += "}\n";
@@ -81,23 +81,27 @@ function generateInventory(inventoryElement, slots) {
     inventoryElement.innerHTML = "";
     const inventory = [];
     for (let i = 0; i < slots; i++) {
-        const slot = {};
-        const inventorySlot = document.createElement("div");
-        inventorySlot.id = `inventory-slot-${i + 1}`;
+        const slot = document.createElement("div");
+        slot.classList.add("inventory-slot");
 
-        slot.name = document.createElement("input");
-        slot.name.type = "text";
-        slot.name.value = "";
+        slot.imageElement = document.createElement("div");
+        slot.imageElement.classList.add("inventory-slot-image");
 
-        slot.count = document.createElement("input");
-        slot.count.type = "number";
-        slot.count.min = "0";
-        slot.count.max = "64";
-        slot.count.value = 0;
+        slot.nameElement = document.createElement("input");
+        slot.nameElement.type = "hidden";
+        slot.nameElement.value = "";
 
-        inventorySlot.appendChild(slot.name);
-        inventorySlot.appendChild(slot.count);
-        inventoryElement.appendChild(inventorySlot);
+        slot.countElement = document.createElement("input");
+        slot.countElement.type = "hidden";
+        slot.countElement.min = "0";
+        slot.countElement.max = "64";
+        slot.countElement.value = "0";
+
+        slot.appendChild(slot.imageElement);
+        slot.appendChild(slot.nameElement);
+        slot.appendChild(slot.countElement);
+        slot.onclick = openItemModal;
+        inventoryElement.appendChild(slot);
         inventory.push(slot);
     }
     return inventory;
@@ -105,8 +109,8 @@ function generateInventory(inventoryElement, slots) {
 
 function initInventory(inventory, values) {
     for (let i = 0; i < values.length && inventory[i]; ++i) {
-        inventory[i].name.value = values[i].name;
-        inventory[i].count.value = values[i].count;
+        inventory[i].nameElement.value = values[i].name;
+        inventory[i].countElement.value = values[i].count;
     }
 }
 
@@ -120,7 +124,7 @@ function Simulator(program) {
     initInventory(
         this.inventory,
         startInventory.map(
-            slot => [{ name: slot.name.value, count: slot.count.value }][0]
+            slot => [{ name: slot.nameElement.value, count: slot.countElement.value }][0]
         )
     );
     this.blocks = [];
@@ -155,7 +159,7 @@ function Simulator(program) {
         this.states.push({
             actionElement: actionElement,
             inventory: this.inventory.map(
-                i => [{ name: i.name.value, count: i.count.value }][0]
+                i => [{ name: i.nameElement.value, count: i.countElement.value }][0]
             ),
             blocks: JSON.parse(JSON.stringify(this.blocks)),
             selectedSlot: this.selectedSlot,
@@ -172,8 +176,8 @@ function Simulator(program) {
     this.applyState = index => {
         const state = this.states[index];
         for (let i = 0; i < this.inventory.length; i++) {
-            this.inventory[i].name.value = state.inventory[i].name;
-            this.inventory[i].count.value = state.inventory[i].count;
+            this.inventory[i].nameElement.value = state.inventory[i].name;
+            this.inventory[i].countElement.value = state.inventory[i].count;
         }
         this.blocks = state.blocks;
         this.setSelectedSlot(state.selectedSlot);
@@ -228,10 +232,10 @@ function Simulator(program) {
 
     this.addItemToInventory = (name, slot) => {
         const inventorySlot = this.inventory[slot - 1];
-        if (inventorySlot.name.value == "") {
-            inventorySlot.name.value = name;
+        if (inventorySlot.nameElement.value == "") {
+            inventorySlot.nameElement.value = name;
         }
-        inventorySlot.count.value = parseInt(inventorySlot.count.value) + 1;
+        inventorySlot.countElement.value = parseInt(inventorySlot.countElement.value) + 1;
     };
 
     this.removeItemFromInventory = quantity => {
