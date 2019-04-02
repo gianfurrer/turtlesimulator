@@ -1,0 +1,32 @@
+#items {
+    background-color: burlywood;
+    padding: 20px;
+}
+
+.item {
+    display: inline-block;
+    margin: 5px;
+}
+
+.item:hover {
+    cursor: pointer;
+}
+
+.item:hover > .item-tooltip {
+    display: block;
+}
+
+.item-image {
+    width: 32px;
+    height: 32px;
+}
+
+.item-tooltip {
+    position: absolute;
+    display: none;
+    background-color: darkblue;
+    border: 2px solid black;
+    border-radius: 5px;
+    color: white;
+    padding: 5px 10px;
+}
