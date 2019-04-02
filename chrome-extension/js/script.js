@@ -70,7 +70,11 @@ function Simulator3D(domWrapper) {
 	alphaswitcher.appendChild(alphavalue);
 
 	//Variables
-	this.colors = {"minecraft:diamond_ore": "00ffff", "minecraft:iron_ore": "b29855"};
+	this.colors = {
+		"minecraft:diamond_ore": "00ffff",
+		"minecraft:iron_ore": "b29855",
+		"minecraft:cobblestone": "858282"
+	};
 	this.isRendering = false;
 	this.fullscreen = false;
 	this.opacity = alphavalue.value;
@@ -98,13 +102,13 @@ function Simulator3D(domWrapper) {
 			this.Scene.remove(this.object),
 			this.object = new THREE.Object3D;
 			for (let c = 0; c < cubes.length; ++c) {
-				this.addCube(cubes[c]);
+				this.addBlock(cubes[c]);
 			}
 			this.Scene.add(this.object);
 			this.Camera.lookAt(this.object.position);
 			this.setRendering(true, 1);
 	}
-	this.removeCube = (coord) => {
+	this.removeBlock = (coord) => {
 		const coordString = JSON.stringify(coord);
 		const targetedObj = this.object.children.filter(c => JSON.stringify(c.position) == coordString)
 			.forEach(o => {
@@ -112,7 +116,7 @@ function Simulator3D(domWrapper) {
 			});
 		this.setRendering(true, 1);
 	}
-	this.addCube = (cubeData) => {
+	this.addBlock = (cubeData) => {
 			const color = "#" + (this.colors[cubeData.name] || "000");
 
 			const meshBasicMaterial = new THREE.MeshBasicMaterial({
