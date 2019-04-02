@@ -138,7 +138,7 @@ function Simulator3D(domWrapper) {
 			});
 			cube.add(new THREE.LineSegments(edgesGeometry,lineBasicMaterial));
 			this.object.add(cube)
-			this.setRendering(true, 1);
+			this.setRendering(true, 500);
 	}
 	this.render = () => {
 			if (this.isRendering) {
