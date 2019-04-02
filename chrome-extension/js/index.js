@@ -12,14 +12,13 @@ getFileContent("simulator.lua", content => {
 function overrideLuaPrint(code) {
     return (
         'local js = require "js"\n\n\n\nfunction print(text)\njs.global:output(text)\nend\n\n' +
-        code +
-        '\nprintOutput({ "[end]" })'
+        code
     );
 }
 
 function getProgram(args) {
     return overrideLuaPrint(
-            getArgsCode(args) +
+        getArgsCode(args) +
             "\n" +
             simulatorCode +
             "\n" +
@@ -27,7 +26,9 @@ function getProgram(args) {
             "\n" +
             getInventoryCode(startInventory) +
             "\n" +
-            document.querySelector("#input").value
+            document.querySelector("#input").value +
+            "\n" +
+            'printOutput({ "[end]" })'
     );
 }
 
@@ -114,7 +115,7 @@ function Simulator(program) {
     const output = document.querySelector("#output");
     const errorOutput = document.querySelector("#erorrs");
 
-    this.simulator3d = new Simulator3D(document.querySelector("#simulator3d"))
+    this.simulator3d = new Simulator3D(document.querySelector("#simulator3d"));
     this.inventory = liveInventory;
     initInventory(
         this.inventory,

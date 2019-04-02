@@ -275,20 +275,20 @@ if not turtle then
     end
 
     function getCoordinatesInFront()
-        local x, y, z = 0, 0, 0
-        if currentDirection == directionEnum.forward then z = currentZ + 1
-        elseif currentDirection == directionEnum.back then z = currentZ - 1
-        elseif currentDirection == directionEnum.right then x = currentX + 1
-        elseif currentDirection == directionEnum.left then x = currentX - 1 end
+        local x, y, z = currentX, currentY, currentZ
+        if currentDirection == directionEnum.forward then z = z + 1
+        elseif currentDirection == directionEnum.back then z = z - 1
+        elseif currentDirection == directionEnum.left then x = x - 1
+        elseif currentDirection == directionEnum.right then x = x + 1 end
         return x, y, z
     end
 
     function getCoordinatesBehind()
-        local x, y, z = 0, 0, 0
-        if currentDirection == directionEnum.forward then z = currentZ - 1
-        elseif currentDirection == directionEnum.back then z = currentZ + 1
-        elseif currentDirection == directionEnum.right then x = currentX - 1
-        elseif currentDirection == directionEnum.left then x = currentX + 1 end
+        local x, y, z = currentX, currentY, currentZ
+        if currentDirection == directionEnum.forward then z = z - 1
+        elseif currentDirection == directionEnum.back then z = z + 1
+        elseif currentDirection == directionEnum.right then x = x - 1
+        elseif currentDirection == directionEnum.left then x = x + 1 end
         return x, y, z
     end
 
