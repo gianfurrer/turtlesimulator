@@ -39,8 +39,8 @@ ores = [
 
 def addBlock(name, coord, coords):
     hexCode = next(filter(lambda o: o["name"] == name, ores))["hex"]
-    string = "würfel({}|{}|{}, 1){{{}}}".format(coord[x], coord[z], coord[y], hexCode)
-    #string = "{} {} {} {}".format(name, coord[x], coord[y], coord[z])
+    #string = "würfel({}|{}|{}, 1){{{}}}".format(coord[x], coord[z], coord[y], hexCode)
+    string = "{} {} {} {}".format(name, coord[x], coord[y], coord[z])
     global genString
     genString += "{}\n".format(string)
     # print(string)

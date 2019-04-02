@@ -16,6 +16,7 @@
 **/
 
 onload = () => {
+		colors = {"minecraft:diamond_ore": "00ffff", "minecraft:iron_ore": "b29855"}
 		const textarea = document.querySelector("#val_drawings")
 		const transparentInput = document.querySelector("#val_alpha")
     function updateCanvas() {
@@ -34,10 +35,18 @@ onload = () => {
 					renderCube(cubes[c]);
 				}
         Scene.add(object);
+				setRendering(true, 1);
     }
+		function clearCoord(coord) {
+			const coordString = JSON.stringify(coord);
+			const targetedObj = object.children.filter(c => JSON.stringify(c.position) == coordString)
+				.forEach(o => {
+					object.remove(o)
+				});
+			setRendering(true, 1);
+		}
     function renderCube(cubeData) {
         const color = "#" + (colors[cubeData.name] || "000");
-				const size = 1;
 
 				const meshBasicMaterial = new THREE.MeshBasicMaterial({
       		color: color,
@@ -46,11 +55,10 @@ onload = () => {
   			});
 
 				//Cube
-        const cube = new THREE.Mesh(new THREE.CubeGeometry(size,size,size), meshBasicMaterial);
-				const halfSize = size / 2;
-        cube.position.x = cubeData.x + size,
-        cube.position.y = cubeData.y + size,
-        cube.position.z = cubeData.z + size;
+        const cube = new THREE.Mesh(new THREE.CubeGeometry(1,1,1), meshBasicMaterial);
+        cube.position.x = cubeData.x,
+        cube.position.y = cubeData.y,
+        cube.position.z = cubeData.z;
 
 				//Stroke Lines
 				const edgesGeometry = new THREE.EdgesGeometry(cube.geometry);
@@ -124,11 +132,10 @@ onload = () => {
     }).mouseout(function(e) {
         setRendering(false);
     });
+
     const container = document.getElementById("rendercanvas");
-    const Canvas = Detector.webgl ? new THREE.WebGLRenderer({
-        antialias: !0
-    }) : new THREE.CanvasRenderer({
-        antialias: !0
+    const Canvas = new THREE.WebGLRenderer({
+        antialias: true
     });
     const width = container.offsetWidth;
     const height = container.offsetHeight;
@@ -145,15 +152,14 @@ onload = () => {
 		Controls.rotateSpeed = 0.3;
     const Scene = new THREE.Scene;
     Scene.background = new THREE.Color(16777215);
-    Detector.webgl && (Canvas.shadowMap.enabled = true,
-    Canvas.shadowMap.type = THREE.PCFSoftShadowMap),
+		setRendering(true, 2000)
     window.addEventListener("resize", setStandard, false);
     let fullscreen = false;
+		updateCanvas();
 		transparentInput.onkeyup = transparentInput.onchange = () => {
 			Controls.noPan = true,
 			opacity = transparentInput.value,
-			updateCanvas(),
-			setRendering(true, 100)
+			updateCanvas()
 		}
 		transparentInput.onfocusout = () => { Controls.noPan = true; }
 		const fullscreenBtnOpen = document.querySelector("#fullscreenbtn");
@@ -172,5 +178,7 @@ onload = () => {
         setStandard(),
         $(textarea).removeClass("fullscreen-val_drawings")
     })
-		colors = {"minecraft:diamond_ore": "00ffff", "minecraft:iron_ore": "b29855"}
+		document.querySelector("#alphaswitcher").onclick = () => {
+			clearCoord({x:3, y: 3, z:3})
+		}
 };

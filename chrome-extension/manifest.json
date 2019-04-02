@@ -25,5 +25,5 @@
     "web_accessible_resources": [
       "simulator.lua"
     ],
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+    "content_security_policy": "script-src 'self' 'unsafe-eval' https://code.jquery.com/jquery-1.12.4.js; object-src 'self'"
   }
