@@ -13,15 +13,17 @@ function overrideLuaPrint(code) {
     return (
         'local js = require "js"\n\n\n\nfunction print(text)\njs.global:output(text)\nend\n\n' +
         code +
-        '\nprint("test [end]")'
+        '\nprintOutput({ "[end]" })'
     );
 }
 
 function getProgram(args) {
     return overrideLuaPrint(
-        getArgsCode(args) +
+            getArgsCode(args) +
             "\n" +
             simulatorCode +
+            "\n" +
+            'printOutput({ "[start]" })' +
             "\n" +
             getInventoryCode(startInventory) +
             "\n" +
@@ -107,15 +109,13 @@ function initInventory(inventory, values) {
     }
 }
 
-const directionEnum = { forward: 1, left: 2, back: 3, right: 4 };
-
 function Simulator(program) {
-
-    this.simulator3d = new Simulator3D(document.querySelector("#simulator3d"));
-
+    const directionEnum = { forward: 1, left: 2, back: 3, right: 4 };
     const output = document.querySelector("#output");
     const errorOutput = document.querySelector("#erorrs");
-    this.inventory = liveInventory
+
+    this.simulator3d = new Simulator3D(document.querySelector("#simulator3d"))
+    this.inventory = liveInventory;
     initInventory(
         this.inventory,
         startInventory.map(
@@ -129,30 +129,33 @@ function Simulator(program) {
     this.direction = directionEnum.forward;
     this.states = [];
 
-
     output.innerHTML = "";
 
     this.luaWorker = new Worker("js/lua-worker.js");
     this.luaWorker.onmessage = e => {
-        output.textContent += e.data + "\n";
-        this.executeAction(e.data);
+        const actionElement = document.createElement("div");
+        actionElement.innerText = e.data;
+        output.appendChild(actionElement);
+        this.executeAction(actionElement);
     };
     this.luaWorker.postMessage(program);
 
-    this.executeAction = action => {
-        const components = action.split(" ");
+    this.executeAction = actionElement => {
+        const components = actionElement.innerText.split(" ");
         const func = this.dict[components[1]];
         func(...components.slice(2));
-        this.saveState(action)
+        this.saveState(actionElement);
     };
 
     const stateElement = document.querySelector("#state");
     stateElement.oninput = e => this.applyState(e.target.value);
 
-    this.saveState = action => {
+    this.saveState = actionElement => {
         this.states.push({
-            action: action,
-            inventory: this.inventory.map(i => [{name: i.name.value, count: i.count.value}][0]),
+            actionElement: actionElement,
+            inventory: this.inventory.map(
+                i => [{ name: i.name.value, count: i.count.value }][0]
+            ),
             blocks: JSON.parse(JSON.stringify(this.blocks)),
             selectedSlot: this.selectedSlot,
             fuelLevel: this.fuelLevel,
@@ -163,9 +166,7 @@ function Simulator(program) {
         });
         stateElement.max = this.states.length - 1;
         stateElement.value = this.states.length - 1;
-    }
-
-    this.saveState("[Initial]")
+    };
 
     this.applyState = index => {
         const state = this.states[index];
@@ -181,18 +182,17 @@ function Simulator(program) {
         this.z = state.z;
         this.direction = state.direction;
         stateElement.value = index;
-    }
+    };
 
     this.play = () => {
         const timeout = document.querySelector("#timeout").value;
         let i = stateElement.value;
         const intervalId = setInterval(() => {
-          if (i < this.states.length) {
-            this.applyState(i++);
-          }
-          else {
-            clearInterval(intervalId);
-          }
+            if (i < this.states.length) {
+                this.applyState(i++);
+            } else {
+                clearInterval(intervalId);
+            }
         }, timeout);
     };
     document.querySelector("#play").onclick = this.play;
@@ -203,7 +203,7 @@ function Simulator(program) {
         selectedSlotElement.textContent = this.selectedSlot;
     };
 
-    const fuelLevelElement = document.querySelector("#fuel-level")
+    const fuelLevelElement = document.querySelector("#fuel-level");
     this.setFuelLevel = value => {
         this.fuelLevel = parseInt(value);
         fuelLevelElement.textContent = this.fuelLevel;
@@ -241,8 +241,8 @@ function Simulator(program) {
     };
 
     this.error = text => {
-        errorOutput.value += text
-    }
+        errorOutput.value += text;
+    };
 
     this.end = () => {
         clearInterval(this.intervalId);
@@ -258,7 +258,8 @@ function Simulator(program) {
         "[addItemToInventory]": this.addItemToInventory,
         "[removeItemFromInventory]": this.removeItemFromInventory,
         "[error]": this.error,
-        "[end]": this.end,
+        "[start]": () => {},
+        "[end]": this.end
     };
 }
 
@@ -276,6 +277,10 @@ onload = () => {
 
 onerror = e => {
     if (e.startsWith('[string "..."]') || e.startsWith("uncaught exception")) {
-        document.querySelector("#errors").textContent = e.split(":").splice(2).join(":").trim();
+        document.querySelector("#errors").textContent = e
+            .split(":")
+            .splice(2)
+            .join(":")
+            .trim();
     }
 };
