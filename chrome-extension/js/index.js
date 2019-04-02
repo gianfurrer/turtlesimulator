@@ -115,11 +115,14 @@ function initInventory(inventory, values) {
 }
 
 function Simulator(program) {
+    this.map = generateMap(1);
+
     const directionEnum = { forward: 1, left: 2, back: 3, right: 4 };
     const output = document.querySelector("#output");
     const errorOutput = document.querySelector("#erorrs");
 
     this.simulator3d = new Simulator3D(document.querySelector("#simulator3d"));
+    this.simulator3d.initCanvas(this.map);
     this.inventory = liveInventory;
     initInventory(
         this.inventory,
