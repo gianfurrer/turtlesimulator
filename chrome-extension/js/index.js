@@ -243,9 +243,9 @@ function Simulator(program) {
     };
 
     this.removeItemFromInventory = quantity => {
-        this.inventory[this.selectedSlot - 1].count.value -= quantity;
-        if (this.inventory[this.selectedSlot - 1].count.value == 0) {
-            this.inventory[this.selectedSlot - 1].name.value = "";
+        this.inventory[this.selectedSlot - 1].countElement.value -= quantity;
+        if (this.inventory[this.selectedSlot - 1].countElement.value == 0) {
+            this.inventory[this.selectedSlot - 1].nameElement.value = "";
         }
     };
 
