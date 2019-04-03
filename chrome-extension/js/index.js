@@ -1,11 +1,12 @@
-let simulatorCode;
+
 this.simulator = {
     addAction: te => {
         console.log(te);
     }
 };
 
-getFileContent("simulator.lua", content => {
+let simulatorCode;
+getFileContent("ressources/simulator.lua", content => {
     simulatorCode = content;
 });
 

@@ -1,5 +1,5 @@
 window = {};
-self.importScripts("fengari-web.js");
+self.importScripts("../libs/fengari-web.js");
 fengari = window.fengari;
 
 window.output = text => {
