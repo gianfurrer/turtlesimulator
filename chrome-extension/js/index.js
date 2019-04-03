@@ -93,14 +93,16 @@ function generateInventory(inventoryElement, slots) {
         slot.nameElement.value = "";
 
         slot.countElement = document.createElement("input");
-        slot.countElement.type = "hidden";
+        slot.countElement.classList.add("inventory-slot-count");
+        slot.countElement.type = "text";
         slot.countElement.min = "0";
         slot.countElement.max = "64";
         slot.countElement.value = "0";
 
+        slot.imageElement.appendChild(slot.countElement);
         slot.appendChild(slot.imageElement);
         slot.appendChild(slot.nameElement);
-        slot.appendChild(slot.countElement);
+        // slot.appendChild(slot.countElement);
         slot.onclick = openItemModal;
         inventoryElement.appendChild(slot);
         inventory.push(slot);

@@ -20,6 +20,11 @@ textarea {
     overflow: scroll;
 }
 
+.turtle-inventory {
+    width: 168px;
+    margin: 20px;
+}
+
 .inventory-slot {
     padding: 2px;
     border: 3px solid #e0e0e0;
@@ -30,4 +35,25 @@ textarea {
 .inventory-slot-image {
     width: 32px;
     height: 32px;
+}
+
+.inventory-slot-count {
+    font-family: monospace;
+    font-size: 18px;
+    height: 22px;
+    width: 20px;
+    text-align: right;
+    outline: none;
+    padding: 0;
+    margin: auto;
+    margin-top: auto;
+    background: transparent;
+    border: none;
+    color: white;
+    display: block;
+}
+
+span {
+    font-size: 18px;
+    font-family: monospace !important;
 }
