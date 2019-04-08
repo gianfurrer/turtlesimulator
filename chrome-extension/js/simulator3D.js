@@ -74,7 +74,7 @@ function Simulator3D(domWrapper) {
 		"minecraft:diamond_ore": "00ffff",
 		"minecraft:iron_ore": "b29855",
 		"minecraft:cobblestone": "858282",
-		"computercraft:mining_turtle": 
+		"computercraft:mining_turtle": "ff69b4" 
 	};
 	this.isRendering = false;
 	this.fullscreen = false;
