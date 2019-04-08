@@ -45,15 +45,9 @@ textarea {
     text-align: right;
     outline: none;
     padding: 0;
-    margin: auto;
-    margin-top: auto;
+    margin-left: auto;
     background: transparent;
     border: none;
     color: white;
     display: block;
-}
-
-span {
-    font-size: 18px;
-    font-family: monospace !important;
 }

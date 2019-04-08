@@ -1,4 +1,6 @@
 
+const itemModal = new ItemModal();
+
 this.simulator = {
     addAction: te => {
         console.log(te);
@@ -95,15 +97,14 @@ function generateInventory(inventoryElement, slots) {
         slot.countElement = document.createElement("input");
         slot.countElement.classList.add("inventory-slot-count");
         slot.countElement.type = "text";
-        slot.countElement.min = "0";
-        slot.countElement.max = "64";
+        slot.countElement.maxLength = "2"
         slot.countElement.value = "0";
 
-        slot.imageElement.appendChild(slot.countElement);
+        
         slot.appendChild(slot.imageElement);
         slot.appendChild(slot.nameElement);
-        // slot.appendChild(slot.countElement);
-        slot.onclick = openItemModal;
+        slot.appendChild(slot.countElement);
+        slot.imageElement.onclick = () => { itemModal.open(slot) };
         inventoryElement.appendChild(slot);
         inventory.push(slot);
     }
@@ -112,13 +113,18 @@ function generateInventory(inventoryElement, slots) {
 
 function initInventory(inventory, values) {
     for (let i = 0; i < values.length && inventory[i]; ++i) {
-        inventory[i].nameElement.value = values[i].name;
+        if (values[i].name == "") {
+             continue;
+        }
+        const name = values[i].name;
+        inventory[i].nameElement.value = name;
+        inventory[i].imageElement.style.background = items.filter(i => i.value === name)[0].backgroundCss;
         inventory[i].countElement.value = values[i].count;
     }
 }
 
 function Simulator(program) {
-    this.map = generateMap(1);
+    this.map = generateMap(document.querySelector("#chunks").value);
 
     const directionEnum = { forward: 1, left: 2, back: 3, right: 4 };
     const output = document.querySelector("#output");
@@ -165,7 +171,7 @@ function Simulator(program) {
         this.states.push({
             actionElement: actionElement,
             inventory: this.inventory.map(
-                i => [{ name: i.nameElement.value, count: i.countElement.value }][0]
+                i => [{ name: i.nameElement.value, count: i.countElement.value, backgroundCss: i.imageElement.style.background }][0]
             ),
             blocks: JSON.parse(JSON.stringify(this.blocks)),
             selectedSlot: this.selectedSlot,
@@ -183,15 +189,14 @@ function Simulator(program) {
         const state = this.states[index];
         for (let i = 0; i < this.inventory.length; i++) {
             this.inventory[i].nameElement.value = state.inventory[i].name;
+            this.inventory[i].imageElement.style.background = state.inventory[i].backgroundCss;
             this.inventory[i].countElement.value = state.inventory[i].count;
         }
         this.blocks = state.blocks;
         this.setSelectedSlot(state.selectedSlot);
         this.setFuelLevel(state.fuelLevel);
-        this.x = state.x;
-        this.y = state.y;
-        this.z = state.z;
-        this.direction = state.direction;
+        this.move(state.x, state.y, state.z);
+        this.turn(state.direction);
         stateElement.value = index;
     };
 
@@ -220,14 +225,22 @@ function Simulator(program) {
         fuelLevelElement.textContent = this.fuelLevel;
     };
 
+    const positionXElement = document.querySelector("#position-x");
+    const positionYElement = document.querySelector("#position-y");
+    const positionZElement = document.querySelector("#position-z");
     this.move = (x, y, z) => {
         this.x = x;
         this.y = y;
         this.z = z;
+        positionXElement.textContent = this.x;
+        positionYElement.textContent = this.y;
+        positionZElement.textContent = this.z;
     };
 
+    const directionElement = document.querySelector("#direction");
     this.turn = direction => {
         this.direction = direction;
+        directionElement.textContent = this.direction
     };
 
     this.addBlock = (name, x, y, z) => {
@@ -240,6 +253,7 @@ function Simulator(program) {
         const inventorySlot = this.inventory[slot - 1];
         if (inventorySlot.nameElement.value == "") {
             inventorySlot.nameElement.value = name;
+            inventorySlot.imageElement.style.background = items.filter(i => i.value === name)[0].backgroundCss;
         }
         inventorySlot.countElement.value = parseInt(inventorySlot.countElement.value) + 1;
     };
@@ -248,6 +262,7 @@ function Simulator(program) {
         this.inventory[this.selectedSlot - 1].countElement.value -= quantity;
         if (this.inventory[this.selectedSlot - 1].countElement.value == 0) {
             this.inventory[this.selectedSlot - 1].nameElement.value = "";
+            this.inventory[this.selectedSlot - 1].imageElement.style.background = "";
         }
     };
 
@@ -268,6 +283,7 @@ function Simulator(program) {
         "[addBlock]": this.addBlock,
         "[addItemToInventory]": this.addItemToInventory,
         "[removeItemFromInventory]": this.removeItemFromInventory,
+        "[drop]": this.removeItemFromInventory,
         "[error]": this.error,
         "[start]": () => {},
         "[end]": this.end

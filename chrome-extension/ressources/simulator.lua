@@ -236,7 +236,9 @@ if not turtle then
             elseif currentDirection == directionEnum.left then currentX = currentX - 1
             elseif currentDirection == directionEnum.right then currentX = currentX + 1 end
             printOutput({ "[move]", currentX, currentY, currentZ })
+            return true
         end
+        return false
     end
     turtle.back = function ()
         if back() then
@@ -245,33 +247,43 @@ if not turtle then
             elseif currentDirection == directionEnum.left then currentX = currentX + 1
             elseif currentDirection == directionEnum.right then currentX = currentX - 1 end
             printOutput({ "[move]", currentX, currentY, currentZ })
+            return true
         end
+        return false
     end
     turtle.up = function ()
         if up() then
             currentY = currentY + 1
             printOutput({ "[move]", currentX, currentY, currentZ })
+            return true
         end
+        return false
     end
     turtle.down = function ()
         if down() then
             currentY = currentY - 1
             printOutput({ "[move]", currentX, currentY, currentZ })
+            return true
         end
+        return false
     end
     turtle.turnLeft = function ()
         if turnLeft() then
             if currentDirection == directionEnum.right then currentDirection = directionEnum.forward
             else currentDirection = currentDirection + 1 end
             printOutput({ "[turn]", currentDirection })
+            return true
         end
+        return false
     end
     turtle.turnRight = function ()
         if turnRight() then
             if currentDirection == directionEnum.forward then currentDirection = directionEnum.right
             else currentDirection = currentDirection - 1 end
             printOutput({ "[turn]", currentDirection })
+            return true
         end
+        return false
     end
 
     function getCoordinatesInFront()

@@ -40,13 +40,12 @@ function ItemModal() {
             });
         };
 
-        const countElement = document.createElement("input");
-        countElement.type = "number";
-        countElement.min = "1";
-        countElement.max = "64";
+        const clearElement = document.createElement("button");
+        clearElement.innerText = "X";
+        clearElement.onclick = this.clear
 
         modalElement.appendChild(queryElement);
-        modalElement.appendChild(countElement);
+        modalElement.appendChild(clearElement);
         modalElement.appendChild(itemsElement);
 
         return modalElement;
@@ -64,16 +63,20 @@ function ItemModal() {
     };
 
     this.onItemClicked = e => {
-        this.slot.countElement.value = this.modal.children[1].value;
         this.slot.nameElement.value = e.currentTarget.value;
         this.slot.imageElement.style.background = e.currentTarget.backgroundCss;
+        if (this.slot.countElement.value == "0") { 
+            this.slot.countElement.value = "1";
+        }
         this.close();
     };
 
+    this.clear = () => {
+        this.slot.nameElement.value = "";
+        this.slot.imageElement.style.background = "";
+        this.slot.countElement.value = "0";
+        this.close();
+    }
+
     this.modal = this.generateDOM();
 }
-
-const itemModal = new ItemModal();
-const openItemModal = e => {
-    itemModal.open(e.currentTarget);
-};
