@@ -2,7 +2,7 @@ if not turtle then
 
     turtle = {}
 
-    local blocks = {}
+    blocks = {}
     local droppedItems = {}
 
     local defaultBlock = "minecraft:cobblestone"
@@ -162,13 +162,15 @@ if not turtle then
     end
 
     function addBlock(name, x, y, z)
+        inserted = false
         for i = 1, #blocks do
             local block = blocks[i]
             if block.x == x and block.y == y and block.z == z then
-                table.remove(blocks, i)
+                blocks[i] = { name = name, x = x, y = y, z = z }
+                inserted = true
             end
         end
-        table.insert(blocks, { name = name, x = x, y = y, z = z })
+        if not inserted then table.insert(blocks, { name = name, x = x, y = y, z = z }) end
         printOutput({ "[addBlock]", name, x, y, z })
     end
 

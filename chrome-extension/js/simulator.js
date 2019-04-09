@@ -1,10 +1,10 @@
 const directionEnum = { forward: 1, left: 2, back: 3, right: 4 };
 
 class Simulator {
-    constructor(program) {
-        this.map = generateMap(chunksElement.value);
+    constructor(program, blocks) {
+        this.blocks = blocks;
         this.simulator3d = new Simulator3D(simulator3dElement);
-        this.simulator3d.initCanvas(this.map);
+        this.simulator3d.initCanvas(this.blocks);
         this.inventory = liveInventory;
         outputElement.innerHTML = "";
         initInventory(
@@ -26,7 +26,6 @@ class Simulator {
         this.positionY = 0;
         this.positionZ = 0;
         this.direction = directionEnum.forward;
-        this.blocks = [];
         this.states = [];
         
         stateElement.oninput = e => this.applyState(e.target.value);

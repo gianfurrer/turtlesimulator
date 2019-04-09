@@ -19,7 +19,7 @@ function overrideLuaPrint(code) {
     );
 }
 
-function getProgram(args) {
+function getProgram(args, blocks) {
     return overrideLuaPrint(
         getArgsCode(args) +
             "\n" +
@@ -28,6 +28,10 @@ function getProgram(args) {
             'printOutput({ "[start]" })' +
             "\n" +
             getInventoryCode(startInventory) +
+            "\n" +
+            getBlocksCode(blocks) +
+            "\n" +
+            `currentY = ${document.querySelector("#height").value}` +
             "\n" +
             document.querySelector("#input").value +
             "\n" +
@@ -42,7 +46,6 @@ function getArgsCode(args) {
             argsCode += `arg[${i + 1}] = "${args[i]}"\n`;
         }
     }
-
     return argsCode;
 }
 
@@ -63,6 +66,16 @@ function getInventoryCode(inventory) {
     return inventoryCode;
 }
 
+function getBlocksCode(blocks) {
+    let luaCode = "blocks = {\n";
+    blocks.forEach(block => {
+        luaCode += `{ name = "${block.name}", x = ${block.x}, y = ${block.y}, z = ${block.z} },`
+    });
+    luaCode += "}\n";
+    return luaCode;
+    // return 'blocks = { { name = "minecraft:diamond_ore", x = 0, y = 12, z = 1 }, { name = "minecraft:diamond_ore", x = 0, y = 12, z = 2 }, { name = "minecraft:diamond_ore", x = 0, y = 12, z = 3 }, { name = "minecraft:diamond_ore", x = -1, y = 12, z = 3 }, { name = "minecraft:diamond_ore", x = 1, y = 12, z = 3 } }'
+}
+
 function getFileContent(fileName, callback) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -75,9 +88,10 @@ function getFileContent(fileName, callback) {
 }
 
 async function executeProgram() {
+    const blocks = generateMap(chunksElement.value)
     const args = getArgs();
-    const program = getProgram(args);
-    window.simulator = new Simulator(program);
+    const program = getProgram(args, blocks);
+    window.simulator = new Simulator(program, blocks);
 }
 
 function generateInventory(inventoryElement, slots) {
