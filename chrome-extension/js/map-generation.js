@@ -59,7 +59,7 @@ function generateMap(chunks=1) {
           const centerBlock = {
             x: random(xChunk + vainRange, xChunk + 15 - vainRange),
             y: random(ore.minLayer + vainRange, ore.maxLayer - vainRange),
-            z: random(xChunk + vainRange, xChunk + 15 - vainRange)
+            z: random(yChunk + vainRange, yChunk + 15 - vainRange)
           }
           addBlock(ore.name, centerBlock, usedCoords);
           let comparisonCoords = JSON.stringify(usedCoords);

@@ -61,21 +61,14 @@ function Simulator3D(domWrapper) {
 	alphavalue.value = "0.5";
 	alphavalue.step = "0.1";
 	alphavalue.className = "alphavalue";
-	alphavalue.onkeyup = alphavalue.onchange = () => {
+	alphavalue.onchange = () => {
 		this.Controls.noPan = true,
-		this.opacity = alphavalue.value,
-		this.setRendering(true, 1);
+		this.initCanvas(this.map);
 	}
 	alphavalue.onfocusout = () => { this.Controls.noPan = true; }
 	alphaswitcher.appendChild(alphavalue);
 
 	//Variables
-	this.colors = {
-		"minecraft:diamond_ore": "00ffff",
-		"minecraft:iron_ore": "b29855",
-		"minecraft:cobblestone": "858282",
-		"computercraft:mining_turtle": "ff69b4" 
-	};
 	this.isRendering = false;
 	this.fullscreen = false;
 	this.opacity = alphavalue.value;
@@ -99,11 +92,12 @@ function Simulator3D(domWrapper) {
 	this.Scene.background = new THREE.Color(16777215);
 
 	//Functions
-	this.initCanvas = (cubes = []) => {
+	this.initCanvas = (map = []) => {
+			this.map = [];
 			this.Scene.remove(this.object),
 			this.object = new THREE.Object3D;
-			for (let c = 0; c < cubes.length; ++c) {
-				this.addBlock(cubes[c]);
+			for (let c = 0; c < map.length; ++c) {
+				this.addBlock(map[c], false);
 			}
 			this.Scene.add(this.object);
 			this.Camera.lookAt(this.object.position);
@@ -115,10 +109,12 @@ function Simulator3D(domWrapper) {
 			.forEach(o => {
 				this.object.remove(o)
 			});
+		this.map = this.map.filter(c => c.x != coord.x && c.y != coord.y && c.z != coord.z);
 		this.setRendering(true, 1);
 	}
-	this.addBlock = (cubeData) => {
-			const color = "#" + (this.colors[cubeData.name] || "000");
+	this.addBlock = (cubeData, render=true) => {
+			items = items || [];
+			const color = "#" + (items.filter(i => i.value == cubeData.name)[0].color || "000");
 
 			const meshBasicMaterial = new THREE.MeshBasicMaterial({
 				color: color,
@@ -138,8 +134,11 @@ function Simulator3D(domWrapper) {
 					color: "#666",
 			});
 			cube.add(new THREE.LineSegments(edgesGeometry,lineBasicMaterial));
-			this.object.add(cube)
-			this.setRendering(true, 500);
+			this.object.add(cube);
+			this.map.push(cubeData);
+			if (render) {
+				this.setRendering(true, 500);
+			}
 	}
 	this.render = () => {
 			if (this.isRendering) {
