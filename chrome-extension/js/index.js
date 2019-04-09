@@ -113,12 +113,13 @@ function generateInventory(inventoryElement, slots) {
 
 function initInventory(inventory, values) {
     for (let i = 0; i < values.length && inventory[i]; ++i) {
-        if (values[i].name == "") {
-             continue;
-        }
         const name = values[i].name;
         inventory[i].nameElement.value = name;
-        inventory[i].imageElement.style.background = items.filter(i => i.value === name)[0].backgroundCss;
+        if (values[i].name == "") {
+            inventory[i].imageElement.style.background = "";       
+        } else {
+            inventory[i].imageElement.style.background = items.filter(i => i.value === name)[0].backgroundCss
+        }
         inventory[i].countElement.value = values[i].count;
     }
 }
