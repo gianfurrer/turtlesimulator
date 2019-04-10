@@ -31,6 +31,8 @@ function getProgram(args, blocks) {
             "\n" +
             getBlocksCode(blocks) +
             "\n" +
+            getItemsCode(items) +
+            "\n" +
             `currentY = ${document.querySelector("#height").value}` +
             "\n" +
             document.querySelector("#input").value +
@@ -58,9 +60,7 @@ function getInventoryCode(inventory) {
     let inventoryCode = "inventory = {\n";
     for (let i = 0; i < inventory.length; i++) {
         const slot = inventory[i];
-        inventoryCode += `{ name = "${slot.nameElement.value}", count = ${
-            slot.countElement.value
-        } },\n`;
+        inventoryCode += `{ name = "${slot.nameElement.value}", count = ${slot.countElement.value} },\n`;
     }
     inventoryCode += "}\n";
     return inventoryCode;
@@ -69,11 +69,19 @@ function getInventoryCode(inventory) {
 function getBlocksCode(blocks) {
     let luaCode = "blocks = {\n";
     blocks.forEach(block => {
-        luaCode += `{ name = "${block.name}", x = ${block.x}, y = ${block.y}, z = ${block.z} },`
+        luaCode += `{ name = "${block.name}", x = ${block.x}, y = ${block.y}, z = ${block.z} },\n`
     });
     luaCode += "}\n";
     return luaCode;
-    // return 'blocks = { { name = "minecraft:diamond_ore", x = 0, y = 12, z = 1 }, { name = "minecraft:diamond_ore", x = 0, y = 12, z = 2 }, { name = "minecraft:diamond_ore", x = 0, y = 12, z = 3 }, { name = "minecraft:diamond_ore", x = -1, y = 12, z = 3 }, { name = "minecraft:diamond_ore", x = 1, y = 12, z = 3 } }'
+}
+
+function getItemsCode(items) {
+    let luaCode = "items = {\n"
+    items.forEach(item => {
+        luaCode += `{ value = "${item.value}", stackSize = ${item.stackSize}, drops = "${item.drops}", minDropCount = ${item.minDropCount}, maxDropCount = ${item.maxDropCount} },\n`
+    })
+    luaCode += "}\n";
+    return luaCode;
 }
 
 function getFileContent(fileName, callback) {

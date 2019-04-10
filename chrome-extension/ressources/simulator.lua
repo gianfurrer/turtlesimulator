@@ -1,17 +1,18 @@
 if not turtle then
+    math.randomseed(os.time())
+    math.random() math.random() math.random()
 
     turtle = {}
 
     blocks = {}
-    local droppedItems = {}
 
-    local defaultBlock = "minecraft:cobblestone"
+    inventory = {}
 
-    inventory = { { name = "minecraft:coal_block", count = 64 }, { name = "minecraft:coal_block", count = 64 },
-                            { name = "", count = 0 }, { name = "", count = 0 }, { name = "", count = 0 }, { name = "", count = 0 },
-                            { name = "", count = 0 }, { name = "", count = 0 }, { name = "", count = 0 }, { name = "", count = 0 },
-                            { name = "", count = 0 }, { name = "", count = 0 }, { name = "", count = 0 }, { name = "", count = 0 },
-                            { name = "", count = 0 }, { name = "", count = 0 } }
+    droppedItems = {}
+
+    items = {}
+
+    local defaultBlock = "minecraft:stone"
 
     local fuelItems = { }
     fuelItems["minecraft:blaze_rod"] = 120
@@ -103,7 +104,12 @@ if not turtle then
         end
         local x, y, z = getCoordinatesFunction()
         addBlock("minecraft:air", x, y, z)
-        addItemToInventory(data.name)
+
+        local item = tableFirstOrNil(items, function (i) return i.value == data.name end)
+        quantity = math.random(item.minDropCount, item.maxDropCount)
+        for i=1, quantity do
+            addItemToInventory(item.drops)
+        end
         return true
     end
 
@@ -314,47 +320,23 @@ if not turtle then
         return currentX, currentY - 1, currentZ
     end
 
-    -- function turnToDirection(targetDirection)
-    --     directionDifference = currentDirection - targetDirection
-    --     if directionDifference > 0 then
-    --         for i = 1, directionDifference do turtle.turnRight() end
-    --     else
-    --         for i = directionDifference, -1 do turtle.turnLeft() end
-    --     end
-    -- end
+    function tableWhere(table, query)
+        local results = {}
+        for i=1,#table do
+            if query(table[i]) then
+                table.insert(results, table[i])
+            end
+        end
+        return results
+    end
 
-    -- function goToCoordinates(targetX, targetY, targetZ, targetDirection)
-    --     targetDirection = targetDirection or currentDirection
-    --     targetX = targetX or 0 targetY = targetY or 0 targetZ = targetZ or 0
-    --     local differenceX, differenceY, differenceZ = currentX - targetX, currentY - targetY, currentZ - targetZ
-
-    --     if differenceY > 0 then
-    --         for i = 1, differenceY do turtle.digDown() turtle.down() end
-    --     else
-    --         for i = differenceY, -1 do turtle.digUp() turtle.up() end
-    --     end
-
-    --     previousDirection = currentDirection
-    --     if differenceX > 0 then
-    --         turnToDirection(directionEnum.left)
-    --         for i = 1, differenceX do turtle.dig() turtle.forward() end
-    --         turnToDirection(previousDirection)
-    --     else
-    --         turnToDirection(directionEnum.right)
-    --         for i = differenceX, -1 do turtle.dig() turtle.forward() end
-    --         turnToDirection(previousDirection)
-    --     end
-
-    --     if differenceZ > 0 then
-    --         turnToDirection(directionEnum.back)
-    --         for i = 1, differenceZ do turtle.dig() turtle.forward() end
-    --         turnToDirection(previousDirection)
-    --     else
-    --         turnToDirection(directionEnum.forward)
-    --         for i = differenceZ, -1 do turtle.dig() turtle.forward() end
-    --         turnToDirection(previousDirection)
-    --     end
-
-    --     turnToDirection(targetDirection)
-    -- end
+    function tableFirstOrNil(table, query)
+        local results = {}
+        for i=1,#table do
+            if query(table[i]) then
+                return table[i]
+            end
+        end
+        return nil
+    end
 end
