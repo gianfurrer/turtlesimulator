@@ -54,12 +54,12 @@ function ItemModal(onItemClicked, onClear) {
         modalContent.appendChild(this.searchElement);
         modalContent.appendChild(clearElement);
         itemElements.forEach(i => {
-            i.onclick = e => {
+            i.onclick = () => {
                 if (this.onItemClicked) {
                     this.onItemClicked({
-                        label: e.currentTarget.label,
-                        value: e.currentTarget.value,
-                        backgroundCss: e.currentTarget.backgroundCss
+                        label: i.label,
+                        value: i.value,
+                        backgroundCss: i.backgroundCss
                     });
                 }
             };
