@@ -11,52 +11,41 @@ function ItemModal(onItemClicked, onClear) {
     });
 
     this.open = () => {
-        if (!this.modal) {
-            this.modal = this.generateDOM();
-        }
-        body.appendChild(this.modal);
-        body.style.overflow = "hidden";
+        !this.modal && (this.modal = this.generateDOM());
+        document.body.appendChild(this.modal);
+        document.body.style.overflow = "hidden";
     };
 
     this.close = () => {
-        if (this.modal) {
-            this.modal.remove();
-        }
-        body.style.overflow = "auto";
+        this.modal && this.modal.remove();
+        document.body.style.overflow = "auto";
         this.modal.searchElement.value = "";
         this.modal.searchElement.onchange();
     };
 
     this.generateDOM = () => {
-        const modal = createModalElement();
-        const modalContent = createModalContentElement(modal);
-        const itemsWrapper = createItemsWrapperElement(modalContent);
-        const itemElements = createItemElements(items, itemsWrapper);
-        modal.searchElement = createSearchElement(itemElements, modalContent);
-        modal.clearElement = createClearElement(modalContent);
-        return dom;
-
-        function createModalElement() {
+        const createModalElement = parent => {
             const modalElement = document.createElement("div");
             modalElement.className = "modal";
+            parent && parent.appendChild(modalElement);
             return modalElement;
         }
 
-        function createModalContentElement(parent=undefined) {
+        const createModalContentElement = parent => {
             const modalContentElement = document.createElement("div");
             modalContentElement.className = "modal-content";
             parent && parent.appendChild(modalContentElement);
             return modalContentElement;
         }
 
-        function createItemsWrapperElement(parent=undefined) {
+        const createItemsWrapperElement = parent => {
             const itemsElement = document.createElement("div");
             itemsElement.className = "items";
             parent && parent.appendChild(itemsElement);
             return itemsElement;
         }
 
-        function createItemElements(items, parent=undefined) {
+        const createItemElements = (items, parent) => {
             const itemElements = [];
 
             items.forEach(item => {
@@ -66,12 +55,12 @@ function ItemModal(onItemClicked, onClear) {
                 itemElement.value = item.value;
                 itemElement.label = item.label;
                 itemElement.backgroundCss = item.backgroundCss;
-                itemElement.onclick = e => {
+                itemElement.onclick = () => {
                     if (this.onItemClicked) {
                         this.onItemClicked({
-                            label: e.currentTarget.label,
-                            value: e.currentTarget.value,
-                            backgroundCss: e.currentTarget.backgroundCss
+                            label: item.label,
+                            value: item.value,
+                            backgroundCss: item.backgroundCss
                         });
                     }
                 };
@@ -87,13 +76,13 @@ function ItemModal(onItemClicked, onClear) {
             return itemElements;
         }
 
-        function createSearchElement(searchArray, parent=undefined) {
+        const createSearchElement = (elements, parent) => {
             const searchElement = document.createElement("input");
             searchElement.type = "text";
 
             searchElement.onchange = searchElement.onkeyup = () => {
                 const query = searchElement.value.toLowerCase();
-                searchArray.forEach(i => {
+                elements.forEach(i => {
                     i.style.display =
                         i.label.toLowerCase().includes(query) ||
                         i.value.toLowerCase().includes(query)
@@ -107,7 +96,7 @@ function ItemModal(onItemClicked, onClear) {
             return searchElement;
         }
 
-        function createClearElement(parent=undefined) {
+        const createClearElement = parent => {
             const clearElement = document.createElement("button");
             clearElement.innerText = "Clear";
             clearElement.onclick = () => {
@@ -116,5 +105,25 @@ function ItemModal(onItemClicked, onClear) {
             parent && parent.appendChild(clearElement);
             return clearElement;
         }
+
+        const modal = createModalElement();
+        const modalContent = createModalContentElement();
+        const itemsWrapper = createItemsWrapperElement();
+        const itemElements = createItemElements(items);
+        const searchElement = createSearchElement(itemElements);
+        const clearElement = createClearElement();
+
+        modal.appendChild(modalContent);
+        modalContent.appendChild(searchElement);
+        modalContent.appendChild(clearElement);
+        modalContent.appendChild(itemsWrapper);
+        itemElements.forEach(i => {
+            itemsWrapper.appendChild(i);
+        });
+        
+        modal.searchElement = searchElement;
+
+        return modal;
+
     };
 }

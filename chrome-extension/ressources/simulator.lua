@@ -191,8 +191,9 @@ if not turtle then
     end
 
     function addItemToInventory(name)
+        local item = tableFirstOrNil(items, function (i) return i.value == name end)
         for i = 1, 16 do
-            if inventory[i].count < 64 and inventory[i].name == name then
+            if inventory[i].count < item.stackSize and inventory[i].name == name then
                 inventory[i].count = inventory[i].count + 1
                 printOutput({ "[addItemToInventory]", name, i })
                 return true
@@ -331,7 +332,6 @@ if not turtle then
     end
 
     function tableFirstOrNil(table, query)
-        local results = {}
         for i=1,#table do
             if query(table[i]) then
                 return table[i]
