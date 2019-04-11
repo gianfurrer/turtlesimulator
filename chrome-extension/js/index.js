@@ -121,6 +121,13 @@ function generateInventory(inventoryElement, slots) {
         slot.countElement.type = "text";
         slot.countElement.maxLength = "2"
         slot.countElement.value = "0";
+
+        slot.countElement.onchange = slot.countElement.onkeyup = () => {
+            const item = items.find(i => i.value == slot.nameElement.value)
+            if (item && slot.countElement.value > item.stackSize) {
+                slot.countElement.value = item.stackSize;
+            }
+        }
         
         slot.appendChild(slot.imageElement);
         slot.appendChild(slot.nameElement);
@@ -132,6 +139,7 @@ function generateInventory(inventoryElement, slots) {
                 if (slot.countElement.value == "0") {
                     slot.countElement.value = "1";
                 }
+                slot.countElement.onchange();
                 itemModal.close();
             }
             itemModal.onClear = () => {
