@@ -1,6 +1,8 @@
 function ItemModal(onItemClicked, onClear) {
+    const body = document.body;
     this.onItemClicked = onItemClicked;
     this.onClear = onClear;
+    this.modal = undefined;
 
     window.addEventListener("click", e => {
         if (e.target == this.modal) {
@@ -12,110 +14,106 @@ function ItemModal(onItemClicked, onClear) {
         if (!this.modal) {
             this.modal = this.generateDOM();
         }
-        document.body.appendChild(this.modal);
-        document.body.style.overflow = "hidden";
+        body.appendChild(this.modal);
+        body.style.overflow = "hidden";
     };
 
     this.close = () => {
         if (this.modal) {
             this.modal.remove();
         }
-        document.body.style.overflow = "auto";
-        this.searchElement.value = "";
-        this.searchElement.onchange();
+        body.style.overflow = "auto";
+        this.modal.searchElement.value = "";
+        this.modal.searchElement.onchange();
     };
 
     this.generateDOM = () => {
-        const modal = getModalElement();
-        const modalContent = getModalContentElement();
-        const itemsWrapper = getItemsWrapperElement();
-        const itemElements = getItemElements(items);
-        this.searchElement = getSearchElement();
-        const clearElement = getClearElement();
+        const modal = createModalElement();
+        const modalContent = createModalContentElement(modal);
+        const itemsWrapper = createItemsWrapperElement(modalContent);
+        const itemElements = createItemElements(items, itemsWrapper);
+        modal.searchElement = createSearchElement(itemElements, modalContent);
+        modal.clearElement = createClearElement(modalContent);
+        return dom;
 
-        this.searchElement.onchange = this.searchElement.onkeyup = () => {
-            const query = this.searchElement.value.toLowerCase();
-            itemElements.forEach(i => {
-                i.style.display =
-                    i.label.toLowerCase().includes(query) ||
-                    i.value.toLowerCase().includes(query)
-                        ? "inline-block"
-                        : "none";
-            });
-        };
-
-        clearElement.onclick = () => {
-            if (this.onClear) {
-                this.onClear();
-            }
-        };
-
-        modal.appendChild(modalContent);
-        modalContent.appendChild(this.searchElement);
-        modalContent.appendChild(clearElement);
-        itemElements.forEach(i => {
-            i.onclick = () => {
-                if (this.onItemClicked) {
-                    this.onItemClicked({
-                        label: i.label,
-                        value: i.value,
-                        backgroundCss: i.backgroundCss
-                    });
-                }
-            };
-            itemsWrapper.appendChild(i);
-        });
-        modalContent.appendChild(itemsWrapper);
-
-        return modal;
-
-        function getModalElement() {
+        function createModalElement() {
             const modalElement = document.createElement("div");
-            modalElement.classList.add("modal");
+            modalElement.className = "modal";
             return modalElement;
         }
 
-        function getModalContentElement() {
+        function createModalContentElement(parent=undefined) {
             const modalContentElement = document.createElement("div");
-            modalContentElement.classList.add("modal-content");
+            modalContentElement.className = "modal-content";
+            parent && parent.appendChild(modalContentElement);
             return modalContentElement;
         }
 
-        function getItemsWrapperElement() {
+        function createItemsWrapperElement(parent=undefined) {
             const itemsElement = document.createElement("div");
-            itemsElement.classList.add("items");
+            itemsElement.className = "items";
+            parent && parent.appendChild(itemsElement);
             return itemsElement;
         }
 
-        function getItemElements(items) {
-            let itemElements = [];
+        function createItemElements(items, parent=undefined) {
+            const itemElements = [];
+
             items.forEach(item => {
                 const itemElement = document.createElement("div");
-                itemElement.classList.add("item");
+                itemElement.className = "item";
                 itemElement.id = item.value;
                 itemElement.value = item.value;
                 itemElement.label = item.label;
                 itemElement.backgroundCss = item.backgroundCss;
+                itemElement.onclick = e => {
+                    if (this.onItemClicked) {
+                        this.onItemClicked({
+                            label: e.currentTarget.label,
+                            value: e.currentTarget.value,
+                            backgroundCss: e.currentTarget.backgroundCss
+                        });
+                    }
+                };
+                parent && parent.appendChild(itemElement);
 
                 const imageElement = document.createElement("div");
-                imageElement.classList.add("item-image");
+                imageElement.className = "item-image";
                 imageElement.style.background = item.backgroundCss;
-
                 itemElement.appendChild(imageElement);
+
                 itemElements.push(itemElement);
             });
             return itemElements;
         }
 
-        function getSearchElement() {
+        function createSearchElement(searchArray, parent=undefined) {
             const searchElement = document.createElement("input");
             searchElement.type = "text";
+
+            searchElement.onchange = searchElement.onkeyup = () => {
+                const query = searchElement.value.toLowerCase();
+                searchArray.forEach(i => {
+                    i.style.display =
+                        i.label.toLowerCase().includes(query) ||
+                        i.value.toLowerCase().includes(query)
+                            ? "inline-block"
+                            : "none";
+                });
+            };
+
+            parent && parent.appendChild(searchElement);
+
             return searchElement;
         }
 
-        function getClearElement() {
+        function createClearElement(parent=undefined) {
             const clearElement = document.createElement("button");
             clearElement.innerText = "Clear";
+            clearElement.onclick = () => {
+                this.onClear && this.onClear();
+            };
+            parent && parent.appendChild(clearElement);
             return clearElement;
         }
     };
