@@ -121,12 +121,28 @@ function generateInventory(inventoryElement, slots) {
         slot.countElement.type = "text";
         slot.countElement.maxLength = "2"
         slot.countElement.value = "0";
-
         
         slot.appendChild(slot.imageElement);
         slot.appendChild(slot.nameElement);
         slot.appendChild(slot.countElement);
-        slot.imageElement.onclick = () => { itemModal.open(slot) };
+        slot.imageElement.onclick = () => { 
+            itemModal.onItemClicked = (item) => {
+                slot.nameElement.value = item.value;
+                slot.imageElement.style.background = item.backgroundCss;
+                if (slot.countElement.value == "0") {
+                    slot.countElement.value = "1";
+                }
+                itemModal.close();
+            }
+            itemModal.onClear = () => {
+                slot.nameElement.value = "";
+                slot.imageElement.style.background = "";
+                slot.countElement.value = "0";
+                itemModal.close();
+            }
+
+            itemModal.open()
+        };
         inventoryElement.appendChild(slot);
         inventory.push(slot);
     }

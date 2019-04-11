@@ -1,82 +1,122 @@
-function ItemModal() {
-    this.generateDOM = () => {
-        const modalElement = document.createElement("div");
-        const itemsElement = document.createElement("div");
-        items.forEach(item => {
-            const wrapper = document.createElement("div");
-            wrapper.id = item.value;
-            wrapper.value = item.value;
-            wrapper.label = item.label;
-            wrapper.backgroundCss = item.backgroundCss;
-            wrapper.classList.add("item");
+function ItemModal(onItemClicked, onClear) {
+    this.onItemClicked = onItemClicked;
+    this.onClear = onClear;
 
-            const image = document.createElement("div");
-            image.classList.add("item-image");
-            image.style.background = item.backgroundCss;
+    window.addEventListener("click", e => {
+        if (e.target == this.modal) {
+            this.close();
+        }
+    });
 
-            const tooltip = document.createElement("span");
-            tooltip.classList.add("item-tooltip");
-            tooltip.innerText = item.label + " (" + item.value + ")";
-
-            wrapper.appendChild(image);
-            wrapper.appendChild(tooltip);
-            wrapper.onclick = this.onItemClicked;
-            itemsElement.appendChild(wrapper);
-        });
-
-        const queryElement = document.createElement("input");
-        queryElement.type = "text";
-        queryElement.onkeyup = queryElement.onchange = e => {
-            const query = e.target.value.toLowerCase();
-            Array.from(itemsElement.children).forEach(item => {
-                if (
-                    item.label.toLowerCase().includes(query) ||
-                    item.value.toLowerCase().includes(query)
-                ) {
-                    item.style.display = "inline-block";
-                } else {
-                    item.style.display = "none";
-                }
-            });
-        };
-
-        const clearElement = document.createElement("button");
-        clearElement.innerText = "X";
-        clearElement.onclick = this.clear
-
-        modalElement.appendChild(queryElement);
-        modalElement.appendChild(clearElement);
-        modalElement.appendChild(itemsElement);
-
-        return modalElement;
-    };
-
-    this.open = slot => {
-        if (slot) {
-            this.slot = slot;
+    this.open = () => {
+        if (!this.modal) {
+            this.modal = this.generateDOM();
         }
         document.body.appendChild(this.modal);
+        document.body.style.overflow = "hidden";
     };
 
     this.close = () => {
-        this.modal.remove();
-    };
-
-    this.onItemClicked = e => {
-        this.slot.nameElement.value = e.currentTarget.value;
-        this.slot.imageElement.style.background = e.currentTarget.backgroundCss;
-        if (this.slot.countElement.value == "0") { 
-            this.slot.countElement.value = "1";
+        if (this.modal) {
+            this.modal.remove();
         }
-        this.close();
+        document.body.style.overflow = "auto";
+        this.searchElement.value = "";
+        this.searchElement.onchange();
     };
 
-    this.clear = () => {
-        this.slot.nameElement.value = "";
-        this.slot.imageElement.style.background = "";
-        this.slot.countElement.value = "0";
-        this.close();
-    }
+    this.generateDOM = () => {
+        const modal = getModalElement();
+        const modalContent = getModalContentElement();
+        const itemsWrapper = getItemsWrapperElement();
+        const itemElements = getItemElements(items);
+        this.searchElement = getSearchElement();
+        const clearElement = getClearElement();
 
-    this.modal = this.generateDOM();
+        this.searchElement.onchange = this.searchElement.onkeyup = () => {
+            const query = this.searchElement.value.toLowerCase();
+            itemElements.forEach(i => {
+                i.style.display =
+                    i.label.toLowerCase().includes(query) ||
+                    i.value.toLowerCase().includes(query)
+                        ? "inline-block"
+                        : "none";
+            });
+        };
+
+        clearElement.onclick = () => {
+            if (this.onClear) {
+                this.onClear();
+            }
+        };
+
+        modal.appendChild(modalContent);
+        modalContent.appendChild(this.searchElement);
+        modalContent.appendChild(clearElement);
+        itemElements.forEach(i => {
+            i.onclick = e => {
+                if (this.onItemClicked) {
+                    this.onItemClicked({
+                        label: e.currentTarget.label,
+                        value: e.currentTarget.value,
+                        backgroundCss: e.currentTarget.backgroundCss
+                    });
+                }
+            };
+            itemsWrapper.appendChild(i);
+        });
+        modalContent.appendChild(itemsWrapper);
+
+        return modal;
+
+        function getModalElement() {
+            const modalElement = document.createElement("div");
+            modalElement.classList.add("modal");
+            return modalElement;
+        }
+
+        function getModalContentElement() {
+            const modalContentElement = document.createElement("div");
+            modalContentElement.classList.add("modal-content");
+            return modalContentElement;
+        }
+
+        function getItemsWrapperElement() {
+            const itemsElement = document.createElement("div");
+            itemsElement.classList.add("items");
+            return itemsElement;
+        }
+
+        function getItemElements(items) {
+            let itemElements = [];
+            items.forEach(item => {
+                const itemElement = document.createElement("div");
+                itemElement.classList.add("item");
+                itemElement.id = item.value;
+                itemElement.value = item.value;
+                itemElement.label = item.label;
+                itemElement.backgroundCss = item.backgroundCss;
+
+                const imageElement = document.createElement("div");
+                imageElement.classList.add("item-image");
+                imageElement.style.background = item.backgroundCss;
+
+                itemElement.appendChild(imageElement);
+                itemElements.push(itemElement);
+            });
+            return itemElements;
+        }
+
+        function getSearchElement() {
+            const searchElement = document.createElement("input");
+            searchElement.type = "text";
+            return searchElement;
+        }
+
+        function getClearElement() {
+            const clearElement = document.createElement("button");
+            clearElement.innerText = "Clear";
+            return clearElement;
+        }
+    };
 }

@@ -21,7 +21,7 @@ textarea {
 }
 
 .turtle-inventory {
-    width: 168px;
+    width: 216px;
     margin: 20px;
 }
 
@@ -30,9 +30,11 @@ textarea {
     border: 3px solid #e0e0e0;
     display: inline-block;
     background-color: #c6c6c6;
+    width: 54px;
 }
 
 .inventory-slot-image {
+    margin: auto;
     width: 32px;
     height: 32px;
 }
