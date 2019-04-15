@@ -339,4 +339,9 @@ if not turtle then
         end
         return nil
     end
+
+    function sleep(seconds)
+        local endTime = os.time() + seconds
+        repeat until os.time() > endTime
+    end
 end
