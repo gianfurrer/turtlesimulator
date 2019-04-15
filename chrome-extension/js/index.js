@@ -42,10 +42,10 @@ function getProgram(args, blocks) {
 }
 
 function getArgsCode(args) {
-    let argsCode = "local args = {}\n";
+    let argsCode = "local arg = {}\n";
     if (args) {
         for (let i = 0; i < args.length; i++) {
-            argsCode += `args[${i + 1}] = "${args[i]}"\n`;
+            argsCode += `arg[${i + 1}] = "${args[i]}"\n`;
         }
     }
     return argsCode;
