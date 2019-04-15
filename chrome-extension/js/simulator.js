@@ -45,7 +45,7 @@ class Simulator {
         };
         this.luaWorker.postMessage(program);
         this.simulator3d.freeze(true);
-        
+
         //Init Save
         this.saveState();
     }
@@ -161,7 +161,7 @@ class Simulator {
                 }
             }
             else {
-                console.error("[LUA ERROR] Slot ${slot} already contains ${inventorySlot.nameElement.value} (Tried to add {name})");
+                console.error("[LUA ERROR] Slot "+slot+" already contains "+inventorySlot.nameElement.value+" (Tried to add "+name+")");
             }
         } 
     };

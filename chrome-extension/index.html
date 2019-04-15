@@ -10,6 +10,11 @@
     <script src="libs/three.r84.min.js"></script>
     <script src="libs/OrbitControls.js"></script>
     
+    <!-- Material Design -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
     <!-- Item Modal -->
     <script src="ressources/items.js"></script>
     <script src="js/itemModal.js"></script>
@@ -23,6 +28,7 @@
     <script src="js/simulator3D.js"></script>
 		<link href="css/simulator3D.css" rel="stylesheet">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body>
     <header class="navbar navbar-dark bg-light box-shadow fixed-top">
@@ -32,13 +38,13 @@
     </header>
 
     <main class="container my-4">
-      <button id="btn-execute">execute</button>
+      <button class="btn" id="btn-execute">execute</button>
       <input type="text" id="args" placeholder="args" />
       <input type="number" id="chunks" placeholder="chunks" min="1" value="1" />
       <input type="number" id="height" placeholder="starting height" value="12" />
       <input type="range" id="state" min="0" max="0" value="0" />
       <input type="number" id="timeout" min="0" value="500" />
-      <button type="button" id="play">Play</button>
+      <button class="btn" type="button" id="play">Play</button>
       <hr>
 
       <div class="inventories row">
@@ -63,12 +69,12 @@
       <div>
       <hr>
       <label for="input">Input</label><br>
-      <textarea id="input">turtle.refuel()</textarea>
+      <textarea class="materialize-textarea" id="input">turtle.refuel()</textarea>
       <hr>
       <label for="output">Output</label><br>
       <div id="output"></div>
-      <textarea id="errors"></textarea>
-      <textarea id="warnings"></textarea>
+      <textarea placeholder="No errors" readonly class="materialize-textarea" id="errors"></textarea>
+      <textarea placeholder="No warnings" readonly class="materialize-textarea" id="warnings"></textarea>
       <div id="simulator3d"></div>
     </main>
   </body>

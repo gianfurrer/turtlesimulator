@@ -15,9 +15,15 @@ textarea {
     width: 100%;
 }
 
+#input {
+    min-height: 300px;
+    overflow: auto;
+    resize: horizontal;
+}
+
 #output {
-    height: 300px;
-    overflow: scroll;
+    max-height: 300px;
+    overflow: auto;
 }
 
 .turtle-inventory {
