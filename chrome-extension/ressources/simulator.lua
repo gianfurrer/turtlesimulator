@@ -1,17 +1,19 @@
 math.randomseed(os.time())
 math.random() math.random() math.random()
 
-turtle = {}
+local turtle = {}
 
-blocks = {}
+local blocks = {}
 
-inventory = {}
+local inventory = {}
 
-droppedItems = {}
+local droppedItems = {}
 
-items = {}
+local items = {}
 
 local defaultBlock = "minecraft:stone"
+
+local slotCount = 16
 
 local fuelItems = { }
 fuelItems["minecraft:blaze_rod"] = 120
@@ -35,10 +37,10 @@ function setFuelLevel(value)
 end
 
 turtle.getSelectedSlot = function ()
-        return selectedSlot
+    return selectedSlot
 end
 turtle.select = function (slot)
-    if slot < 1 or slot > 16 then
+    if slot < 1 or slot > slotCount then
         return false
     end
     selectedSlot = slot
@@ -152,15 +154,7 @@ turtle.placeUp = function () return placeBase(turtle.detectUp, getCoordinatesAbo
 turtle.placeDown = function () return placeBase(turtle.detectDown, getCoordinatesBeneath) end
 
 turtle.drop = function (count)
-    count = count or inventory[selectedSlot].count
-    if count > inventory[selectedSlot].count  then
-        count = inventory[selectedSlot].count
-    end
-    inventory[selectedSlot].count = inventory[selectedSlot].count - count
-    if inventory[selectedSlot].count <= 0 then
-        inventory[selectedSlot] = {name = "", count = 0}
-    end
-    printOutput({ "[drop]", count })
+    removeItemFromInventory(count)
     return true
 end
 turtle.dropUp = function (count)
