@@ -206,7 +206,7 @@ function addItemToInventory(name)
         end
     end
     if freeSlot > -1 then
-        inventory[freeSlot] = {name = name, count = 1}
+        inventory[freeSlot] = { name = name, count = 1 }
         printOutput({ "[addItemToInventory]", name, freeSlot })
         return true
     end
