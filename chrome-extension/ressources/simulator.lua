@@ -196,20 +196,20 @@ if not turtle then
 
     function addItemToInventory(name)
         local item = tableFirstOrNil(items, function (i) return i.value == name end)
+        local freeSlot = -1
         for i = 1, 16 do
             if inventory[i].count < item.stackSize and inventory[i].name == name then
                 inventory[i].count = inventory[i].count + 1
                 printOutput({ "[addItemToInventory]", name, i })
                 return true
+            elseif freeSlot == -1 and inventory[i].count == 0 then
+                freeSlot = i
             end
         end
-        for i = 1, 16 do
-            if inventory[i].count == 0 then
-                inventory[i].name = name
-                inventory[i].count = 1
-                printOutput({ "[addItemToInventory]", name, i })
-                return true
-            end
+        if freeSlot > -1 then
+            inventory[freeSlot] = {name = name, count = 1}
+            printOutput({ "[addItemToInventory]", name, freeSlot })
+            return true
         end
         return false
     end
