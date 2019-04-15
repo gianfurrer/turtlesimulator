@@ -199,7 +199,8 @@ class Simulator {
         "[drop]": {func: this.removeItemFromInventory, timeout: false},
         "[error]": {func: this.error, timeout: false},
         "[start]": {func: this.start, timeout: false},
-        "[end]": {func: this.end, timeout: false}
+        "[end]": {func: this.end, timeout: false},
+        "[log]": {func: console.log, timeout: false}
     };
 
 
