@@ -142,7 +142,7 @@ class Simulator {
         if (inventorySlot) {
             if (inventorySlot.nameElement.value == "") {
                 inventorySlot.nameElement.value = name;
-                inventorySlot.imageElement.style.background = items.filter(i => i.value === name)[0].backgroundCss;
+                inventorySlot.imageElement.style.background = items.find(i => i.value == name).backgroundCss;
                 inventorySlot.countElement.value = 0;
             }
     
