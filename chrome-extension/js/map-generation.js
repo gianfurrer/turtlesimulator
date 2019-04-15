@@ -10,6 +10,12 @@ const ores = [
         minVains: 1, maxVains: 5,
         minPerVain: 4, maxPerVain: 10,
         minLayer: 5, maxLayer: 45, hex: "b29855"
+    },
+    {
+      name: "minecraft:restone_ore",
+      minVains: 2, maxVains: 5,
+      minPerVain: 3, maxPerVain: 9,
+      minLayer: 5, maxLayer: 50, hex: "ff0000"
     }
 ]
 

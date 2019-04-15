@@ -116,7 +116,7 @@ function Simulator3D(domWrapper) {
 	}
 	this.addBlock = (cubeData, render=true) => {
 			items = items || [];
-			const color = "#" + (items.filter(i => i.value == cubeData.name)[0].color || "000");
+			const color = "#" + (items.find(i => i.value == cubeData.name).color || "000");
 
 			const meshBasicMaterial = new THREE.MeshBasicMaterial({
 				color: color,

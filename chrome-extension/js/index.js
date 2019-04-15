@@ -162,7 +162,7 @@ function initInventory(inventory, values) {
         const name = values[i].name;
         inventory[i].nameElement.value = name;
         inventory[i].countElement.value = values[i].count;
-        const item = items.filter(i => i.value === name)[0];
+        const item = items.find(i => i.value === name);
         inventory[i].imageElement.style.background = item ? item.backgroundCss : "";
     }
 }

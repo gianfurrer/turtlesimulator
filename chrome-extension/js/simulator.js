@@ -121,17 +121,17 @@ class Simulator {
         const inventorySlot = this.inventory[slot - 1];
         if (inventorySlot.nameElement.value == "") {
             inventorySlot.nameElement.value = name;
-            inventorySlot.imageElement.style.background = items.filter(i => i.value === name)[0].backgroundCss;
+            inventorySlot.imageElement.style.background = items.find(i => i.value == name).backgroundCss;
         }
         inventorySlot.countElement.value = parseInt(inventorySlot.countElement.value) + 1;
     };
 
     removeItemFromInventory = quantity => {
-        const slot = this.selectedSlot;
-        this.inventory[this.selectedSlot - 1].countElement.value -= quantity;
-        if (this.inventory[this.selectedSlot - 1].countElement.value == 0) {
-            this.inventory[this.selectedSlot - 1].nameElement.value = "";
-            this.inventory[this.selectedSlot - 1].imageElement.style.background = "";
+        const slot = this.inventory[this.selectedSlot - 1];
+        slot.countElement.value -= quantity;
+        if (slot.countElement.value == 0) {
+            slot.nameElement.value = "";
+            slot.imageElement.style.background = "";
         }
     };
 
