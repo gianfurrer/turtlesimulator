@@ -1322,7 +1322,7 @@ var items = [
   {
       label: "Chest",
       value: "minecraft:chest",
-      color: "ffffff",
+      color: "7f5d3d",
       backgroundCss:
           'rgba(0, 0, 0, 0) url("/assets/images/items.png") no-repeat scroll -800px -512px / auto padding-box border-box',
       stackSize: 64,

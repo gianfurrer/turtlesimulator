@@ -31,6 +31,7 @@ class Simulator {
         this.actions = [];
         this.timeoutElement = document.querySelector("#timeout");
         this.stateSlider = document.querySelector("#state");
+        this.stateSlider.value = this.stateSlider.max = 0;
         
         stateElement.oninput = e => this.applyState(e.target.value);
         playElement.onclick = this.play
@@ -43,6 +44,10 @@ class Simulator {
             this.executeAction(actionElement);
         };
         this.luaWorker.postMessage(program);
+        this.simulator3d.freeze(true);
+        
+        //Init Save
+        this.saveState();
     }
 
     executeAction = actionElement => {
@@ -55,7 +60,7 @@ class Simulator {
         func(...args);
         this.actions.push({func: func, args: args});
         stateElement.value = ++stateElement.max;
-        if (!(this.actions % this.saveStateAt)) {
+        if (!(this.actions.length % this.saveStateAt)) {
             this.saveState();
         }
     };
@@ -77,7 +82,7 @@ class Simulator {
     };
 
     applyState = index => {
-        let stateIndex = Math.floor(index / this.saveStateAt)*this.saveStateAt
+        let stateIndex = Math.floor(index / this.saveStateAt)
         const state = this.states[stateIndex];
         for (let i = 0; i < this.inventory.length; i++) {
             this.inventory[i].nameElement.value = state.inventory[i].name;
@@ -177,10 +182,7 @@ class Simulator {
         errorOutputElement.value += text;
     };
 
-    start = () => {
-        this.stateSlider.max = this.stateSlider.value = 0;
-        this.simulator3d.freeze(true);
-    }
+    start = () => {}
 
     end = () => {
         clearInterval(this.intervalId);
