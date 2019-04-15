@@ -157,6 +157,7 @@ if not turtle then
         if count > inventory[selectedSlot].count  then
             count = inventory[selectedSlot].count
         end
+        inventory[selectedSlot].count = inventory[selectedSlot].count - count
         printOutput({ "[drop]", count })
         return true
     end
