@@ -82,6 +82,7 @@ function Simulator3D(domWrapper) {
 
 	//Init Variables
 	this.Canvas.setSize(width, height),
+	this.Canvas.domElement.setAttribute("tabIndex", 0);
 	this.Camera.position.z = 3.5,
 	this.Camera.position.y = 5,
 	this.Camera.position.x = -3;
@@ -101,6 +102,7 @@ function Simulator3D(domWrapper) {
 			}
 			this.Scene.add(this.object);
 			this.Camera.lookAt(this.object.position);
+			this.setStandard();
 			this.setRendering(true, 1);
 	}
 	this.removeBlock = (coord) => {
@@ -179,8 +181,16 @@ function Simulator3D(domWrapper) {
 	}
 
 	//Events
-	container.addEventListener("mousedown", e => { this.setRendering(true); });
+	container.addEventListener("mouseover", e => { this.Canvas.domElement.focus(); this.setRendering(true); });
 	container.addEventListener("mouseout", e => { this.setRendering(false); });
+	container.addEventListener("resize", this.setStandard);
+	container.addEventListener("keydown", e => {
+		if (e.keyCode >= 32 && e.keyCode <= 40) {
+			this.Controls.noPan = false;
+			e.preventDefault();
+			this.setRendering(true, 100);
+		}
+	});
 
 	this.domElement.addEventListener("DOMNodeInserted", e =>  {
 	  this.fullscreen ? this.setFullscreen() : this.setStandard();

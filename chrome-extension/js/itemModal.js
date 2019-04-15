@@ -5,9 +5,7 @@ function ItemModal(onItemClicked, onClear) {
     this.modal = undefined;
 
     window.addEventListener("click", e => {
-        if (e.target == this.modal) {
-            this.close();
-        }
+        (e.target == this.modal) && this.close();
     });
 
     this.open = () => {
@@ -56,13 +54,11 @@ function ItemModal(onItemClicked, onClear) {
                 itemElement.label = item.label;
                 itemElement.backgroundCss = item.backgroundCss;
                 itemElement.onclick = () => {
-                    if (this.onItemClicked) {
-                        this.onItemClicked({
-                            label: item.label,
-                            value: item.value,
-                            backgroundCss: item.backgroundCss
-                        });
-                    }
+                    this.onItemClicked && this.onItemClicked({
+                        label: item.label,
+                        value: item.value,
+                        backgroundCss: item.backgroundCss
+                    });
                 };
                 parent && parent.appendChild(itemElement);
 
