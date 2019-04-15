@@ -6,6 +6,7 @@ function Simulator3D(domWrapper) {
 	this.domElement = domWrapper;
 	this.domElement.innerHTML = "";
 	this.domElement.className = "wrapper3d";
+	this.frozen = false;
 
 	const innerWrapper = document.createElement("div");
 	innerWrapper.className = "wrapper3dinner";
@@ -143,7 +144,7 @@ function Simulator3D(domWrapper) {
 			}
 	}
 	this.render = () => {
-			if (this.isRendering) {
+			if (this.isRendering && !this.frozen) {
 				setTimeout(() => {
 						requestAnimationFrame(this.render)
 				}, 25),
@@ -151,6 +152,12 @@ function Simulator3D(domWrapper) {
 				this.Canvas.render(this.Scene, this.Camera)
 			}
 	}
+
+	this.freeze = (state) => {
+		this.frozen = state;
+		!state && this.setRendering(true, 50);
+	}
+
 	this.setRendering = (activate, timeout = 0) => {
 			if (activate && !this.isRendering) {
 				this.isRendering = true;

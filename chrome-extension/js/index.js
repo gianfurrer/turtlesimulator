@@ -42,10 +42,10 @@ function getProgram(args, blocks) {
 }
 
 function getArgsCode(args) {
-    let argsCode = "";
+    let argsCode = "local args = {}\n";
     if (args) {
         for (let i = 0; i < args.length; i++) {
-            argsCode += `arg[${i + 1}] = "${args[i]}"\n`;
+            argsCode += `args[${i + 1}] = "${args[i]}"\n`;
         }
     }
     return argsCode;
@@ -118,7 +118,8 @@ function generateInventory(inventoryElement, slots) {
 
         slot.countElement = document.createElement("input");
         slot.countElement.classList.add("inventory-slot-count");
-        slot.countElement.type = "text";
+        slot.countElement.type = "number";
+        slot.countElement.min = 0;
         slot.countElement.maxLength = "2"
         slot.countElement.value = "0";
 
@@ -205,17 +206,34 @@ onload = () => {
     startInventory = generateInventory(startInventoryElement, 16);
     liveInventory = generateInventory(liveInventoryElement, 16);
     initInventory(startInventory, [
-        { name: "minecraft:coal_block", count: 64 }
+        { name: "minecraft:coal_block", count: 64 },
+        { name: "minecraft:coal_block", count: 64 },
+        { name: "minecraft:chest", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 },
+        { name: "minecraft:stone", count: 64 }
     ]);
     
 };
 
 onerror = e => {
     if (e.startsWith('[string "..."]') || e.startsWith("uncaught exception")) {
-        document.querySelector("#errors").textContent = e
+        document.querySelector("#errors").textContent += "\n" + e
             .split(":")
             .splice(2)
             .join(":")
             .trim();
+    }
+    else if (e.startsWith("[LUA ERROR]")) {
+        document.querySelector("#errors").textContent += "\n" + e;
     }
 };
