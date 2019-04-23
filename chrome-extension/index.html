@@ -31,12 +31,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body>
-    <header class="navbar navbar-dark bg-light box-shadow fixed-top">
-        <a href="#" data-target="slide-out" class="sidenav-trigger hide-on-large-only"><i class="material-icons">menu</i></a>
-        <title>Turtle Simulator</title>
-    </header>
+    <nav class="hide-on-large-only">
+      <div class="nav-wrapper valign-wrapper">
+        <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <h5 class="m-0">Turtle Simulator</h3>
+      </div>
+    </nav>
 
-    <div id="slide-out" class="sidenav sidenav-fixed px-3 py-5">
+    <ul id="slide-out" class="sidenav sidenav-fixed m-0">
+      <nav class="hide-on-med-and-down">
+        <div class="nav-wrapper valign-wrapper">
+            <h5 class="m-0 mx-3">Turtle Simulator</h3>
+        </div>
+      </nav>
+      <div class="p-3">
         <p class="range-field">
           <input type="range" id="state" min="0" max="0" value="0" />
         </p>
@@ -45,10 +53,11 @@
           <label for="timeout">Timeout</label>
         </div>
         <button class="btn" type="button" id="play">Play</button>
-    </div>
+      </div>
+    </ul>
 
     <main>
-      <div class="row px-2 mb-1">
+      <div class="row px-2 mb-1 mt-3">
         <div class="col-md-6">
           <label for="input">Input</label><br>
           <textarea class="materialize-textarea" id="input">turtle.refuel()</textarea>
