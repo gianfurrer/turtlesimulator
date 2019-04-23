@@ -1,22 +1,11 @@
 function ItemModal(onItemClicked, onClear) {
-    const body = document.body;
-    this.onItemClicked = onItemClicked;
-    this.onClear = onClear;
-    this.modal = undefined;
-
-    window.addEventListener("click", e => {
-        (e.target == this.modal) && this.close();
-    });
 
     this.open = () => {
-        !this.modal && (this.modal = this.generateDOM());
-        document.body.appendChild(this.modal);
-        document.body.style.overflow = "hidden";
+        $("#item-modal").modal("open");
     };
 
     this.close = () => {
-        this.modal && this.modal.remove();
-        document.body.style.overflow = "auto";
+        $("#item-modal").modal("close")
         this.modal.searchElement.value = "";
         this.modal.searchElement.onchange();
     };
@@ -24,24 +13,25 @@ function ItemModal(onItemClicked, onClear) {
     this.generateDOM = () => {
         const createModalElement = parent => {
             const modalElement = document.createElement("div");
+            modalElement.id = "item-modal";
             modalElement.className = "modal";
             parent && parent.appendChild(modalElement);
             return modalElement;
-        }
+        };
 
         const createModalContentElement = parent => {
             const modalContentElement = document.createElement("div");
             modalContentElement.className = "modal-content";
             parent && parent.appendChild(modalContentElement);
             return modalContentElement;
-        }
+        };
 
         const createItemsWrapperElement = parent => {
             const itemsElement = document.createElement("div");
             itemsElement.className = "items";
             parent && parent.appendChild(itemsElement);
             return itemsElement;
-        }
+        };
 
         const createItemElements = (items, parent) => {
             const itemElements = [];
@@ -54,11 +44,12 @@ function ItemModal(onItemClicked, onClear) {
                 itemElement.label = item.label;
                 itemElement.backgroundCss = item.backgroundCss;
                 itemElement.onclick = () => {
-                    this.onItemClicked && this.onItemClicked({
-                        label: item.label,
-                        value: item.value,
-                        backgroundCss: item.backgroundCss
-                    });
+                    this.onItemClicked &&
+                        this.onItemClicked({
+                            label: item.label,
+                            value: item.value,
+                            backgroundCss: item.backgroundCss
+                        });
                 };
                 parent && parent.appendChild(itemElement);
 
@@ -70,7 +61,7 @@ function ItemModal(onItemClicked, onClear) {
                 itemElements.push(itemElement);
             });
             return itemElements;
-        }
+        };
 
         const createSearchElement = (elements, parent) => {
             const searchElement = document.createElement("input");
@@ -90,7 +81,7 @@ function ItemModal(onItemClicked, onClear) {
             parent && parent.appendChild(searchElement);
 
             return searchElement;
-        }
+        };
 
         const createClearElement = parent => {
             const clearElement = document.createElement("button");
@@ -100,7 +91,7 @@ function ItemModal(onItemClicked, onClear) {
             };
             parent && parent.appendChild(clearElement);
             return clearElement;
-        }
+        };
 
         const modal = createModalElement();
         const modalContent = createModalContentElement();
@@ -116,10 +107,17 @@ function ItemModal(onItemClicked, onClear) {
         itemElements.forEach(i => {
             itemsWrapper.appendChild(i);
         });
-        
+
         modal.searchElement = searchElement;
 
         return modal;
-
     };
+    
+    this.onItemClicked = onItemClicked;
+    this.onClear = onClear;
+    this.modal = this.generateDOM();
+    document.addEventListener("DOMContentLoaded", () => {
+        document.body.appendChild(this.modal);
+        $("#item-modal").modal();
+    });
 }
