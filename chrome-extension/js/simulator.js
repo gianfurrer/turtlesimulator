@@ -33,7 +33,7 @@ class Simulator {
         this.stateSlider = document.querySelector("#state");
         this.stateSlider.value = this.stateSlider.max = 0;
         
-        stateElement.oninput = e => this.applyState(e.target.value);
+        stateElement.onmouseup = e => this.applyState(e.target.value);
         playElement.onclick = this.play
 
         this.luaWorker = new Worker("js/lua-worker.js");
@@ -82,6 +82,10 @@ class Simulator {
     };
 
     applyState = index => {
+        if (this.currentPlayId) {
+            clearInterval(this.currentPlayId)
+            this.currentPlayId = undefined;
+        }
         let stateIndex = Math.floor(index / this.saveStateAt)
         const state = this.states[stateIndex];
         for (let i = 0; i < this.inventory.length; i++) {
@@ -100,20 +104,24 @@ class Simulator {
             const action = this.actions[i];
             action.func(...action.args);
         }
-    };
+    }
 
     play = () => {
         const timeout = this.timeoutElement.value;
         let i = stateElement.value;
         this.applyState(i);
-        const intervalId = setInterval(() => {
+        this.currentPlayId = setInterval(() => {
             if (i < this.actions.length) {
+                let nextAction = undefined;
                 do {
                     const action = this.actions[i++];
                     action.func(...action.args);
-                } while(!this.funcNameToFuncDict["["+this.actions[i].func.name+"]"].timeout && i < this.actions.length);
+                    stateElement.value = i;
+                    nextAction = this.funcNameToFuncDict["["+this.actions[i].func.name+"]"]
+                } while(i < this.actions.length && nextAction && nextAction.timeout);
             } else {
-                clearInterval(intervalId);
+                clearInterval(this.currentPlayId);
+                this.currentPlayId = undefined
             }
         }, timeout);
     };
@@ -207,44 +215,44 @@ class Simulator {
 
 
     set selectedSlot(value) {
-        selectedSlotElement.textContent = value;
+        selectedSlotElement.value = value;
     }
     get selectedSlot() {
-        return parseInt(selectedSlotElement.textContent);
+        return parseInt(selectedSlotElement.value);
     }
 
     set fuelLevel(value) {
-        fuelLevelElement.textContent = value;
+        fuelLevelElement.value = value;
     }
     get fuelLevel() {
-        return parseInt(fuelLevelElement.textContent);
+        return parseInt(fuelLevelElement.value);
     }
 
     set positionX(value) {
-        positionXElement.textContent = value;
+        positionXElement.value = value;
     }
     get positionX() {
-        return parseInt(positionXElement.textContent);
+        return parseInt(positionXElement.value);
     }
 
     set positionY(value) {
-        positionYElement.textContent = value;
+        positionYElement.value = value;
     }
     get positionY() {
-        return parseInt(positionYElement.textContent);
+        return parseInt(positionYElement.value);
     }
 
     set positionZ(value) {
-        positionZElement.textContent = value;
+        positionZElement.value = value;
     }
     get positionZ() {
-        return parseInt(positionZElement.textContent);
+        return parseInt(positionZElement.value);
     }
 
     set direction(value) {
-        directionElement.textContent = value;
+        directionElement.value = value;
     }
     get direction() {
-        return parseInt(directionElement.textContent);
+        return parseInt(directionElement.value);
     }
 }

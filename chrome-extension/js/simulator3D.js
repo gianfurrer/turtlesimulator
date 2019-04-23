@@ -7,6 +7,7 @@ function Simulator3D(domWrapper) {
 	this.domElement.innerHTML = "";
 	this.domElement.className = "wrapper3d";
 	this.frozen = false;
+	this.disableTransparentElement = true
 
 	const innerWrapper = document.createElement("div");
 	innerWrapper.className = "wrapper3dinner";
@@ -50,29 +51,31 @@ function Simulator3D(domWrapper) {
 	geoswitches.className = "geoswitches";
 	innerWrapper.appendChild(geoswitches);
 
-	const alphaswitcher = document.createElement("div");
-	alphaswitcher.className = "alphaswitcher";
-	alphaswitcher.textContent = "Transparenz: ";
-	innerWrapper.appendChild(alphaswitcher);
+	if (!this.disableTransparentElement) {
+		const alphaswitcher = document.createElement("div");
+		alphaswitcher.className = "alphaswitcher";
+		alphaswitcher.textContent = "Transparenz: ";
+		innerWrapper.appendChild(alphaswitcher);
 
-	const alphavalue = document.createElement("input");
-	alphavalue.type = "number";
-	alphavalue.min = "0";
-	alphavalue.max = "1";
-	alphavalue.value = "0.5";
-	alphavalue.step = "0.1";
-	alphavalue.className = "alphavalue";
-	alphavalue.onchange = () => {
-		this.Controls.noPan = true,
-		this.initCanvas(this.map);
+		const alphavalue = document.createElement("input");
+		alphavalue.type = "number";
+		alphavalue.min = "0";
+		alphavalue.max = "1";
+		alphavalue.value = "0.5";
+		alphavalue.step = "0.1";
+		alphavalue.className = "alphavalue";
+		alphavalue.onchange = () => {
+			this.Controls.noPan = true,
+			this.initCanvas(this.map);
+		}
+		alphavalue.onfocusout = () => { this.Controls.noPan = true; }
+		alphaswitcher.appendChild(alphavalue);
 	}
-	alphavalue.onfocusout = () => { this.Controls.noPan = true; }
-	alphaswitcher.appendChild(alphavalue);
 
 	//Variables
 	this.isRendering = false;
 	this.fullscreen = false;
-	this.opacity = alphavalue.value;
+	this.opacity = this.disableTransparentElement ? 0.5 : alphavalue.value;
 	this.object = new THREE.Object3D;
 	this.Canvas = new THREE.WebGLRenderer({ antialias: true });
 	const width = container.offsetWidth;

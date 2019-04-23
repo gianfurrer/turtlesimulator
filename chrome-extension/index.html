@@ -8,12 +8,7 @@
     <script src="libs/jquery.min.js"></script>
     <script src="libs/fengari-web.js"></script>
     <script src="libs/three.r84.min.js"></script>
-    <script src="libs/OrbitControls.js"></script>
-    
-    <!-- Material Design -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="libs/OrbitControls.js"></script>    
 
     <!-- Item Modal -->
     <script src="ressources/items.js"></script>
@@ -26,56 +21,102 @@
 
     <!-- 3D Simulation -->
     <script src="js/simulator3D.js"></script>
-		<link href="css/simulator3D.css" rel="stylesheet">
+    <link href="css/simulator3D.css" rel="stylesheet">
+    
+    <!-- Material Design -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/materialize.min.css">
+    <script src="libs/materialize.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body>
     <header class="navbar navbar-dark bg-light box-shadow fixed-top">
-      <div class="container d-flex justify-content-between">
-          <title>Turtle Simulator</title>
-      </div>
+        <a href="#" data-target="slide-out" class="sidenav-trigger hide-on-large-only"><i class="material-icons">menu</i></a>
+        <title>Turtle Simulator</title>
     </header>
 
-    <main class="container my-4">
-      <button class="btn" id="btn-execute">execute</button>
-      <input type="text" id="args" placeholder="args" />
-      <input type="number" id="chunks" placeholder="chunks" min="1" value="1" />
-      <input type="number" id="height" placeholder="starting height" value="12" />
-      <input type="range" id="state" min="0" max="0" value="0" />
-      <input type="number" id="timeout" min="0" value="500" />
-      <button class="btn" type="button" id="play">Play</button>
-      <hr>
+    <div id="slide-out" class="sidenav sidenav-fixed px-3 py-5">
+        <p class="range-field">
+          <input type="range" id="state" min="0" max="0" value="0" />
+        </p>
+        <div class="input-field col s12">
+          <input id="timeout" type="number" value="500">
+          <label for="timeout">Timeout</label>
+        </div>
+        <button class="btn" type="button" id="play">Play</button>
+    </div>
 
-      <div class="inventories row">
-        <div>
-          <label for="start-inventory">Start Inventory</label>
-          <div id="start-inventory" class="turtle-inventory">
-
+    <main>
+      <div class="row px-2 mb-1">
+        <div class="col-md-6">
+          <label for="input">Input</label><br>
+          <textarea class="materialize-textarea" id="input">turtle.refuel()</textarea>
+          <div class="row">
+            <div class="input-field col-sm-6 col-xl-3 px-1">
+                <input id="height" type="number" value="12">
+                <label for="height">Starting Height</label>
+              </div>
+            <div class="input-field col-sm-6 col-xl-2 px-1">
+                <input placeholder="chunks" id="chunks" type="text">
+                <label for="chunks">Chunks</label>
+              </div>
+            <div class="input-field col-sm-8 col-xl-4 px-1">
+              <input placeholder="args" id="args" type="text">
+              <label for="args">Args</label>
+            </div>
+            <div class="col-sm-4 col-lg-3 my-3 center-align">
+                <button class="btn" id="btn-execute">Execute</button>
+            </div>
           </div>
         </div>
-        <div>
-          <label for="live-inventory">Live Inventory</label>
-          <div id="live-inventory" class="turtle-inventory">
-
+        <div class="col-md-6">
+          <label for="output">Output</label><br>
+          <div id="output"></div>
+          <div class="row">
+              <textarea placeholder="No errors" readonly class="materialize-textarea" id="errors"></textarea>
+              <textarea placeholder="No warnings" readonly class="materialize-textarea" id="warnings"></textarea>
           </div>
-        <p>Selected slot: <span id="selected-slot">1</span></p>
-        <p>Fuel level: <span id="fuel-level">0</span></p>
-        <p>X: <span id="position-x">0</span></p>
-        <p>Y: <span id="position-y">0</span></p>
-        <p>Z: <span id="position-z">0</span></p>
-        <p>Direction: <span id="direction">1</span></p>
         </div>
-      <div>
-      <hr>
-      <label for="input">Input</label><br>
-      <textarea class="materialize-textarea" id="input">turtle.refuel()</textarea>
-      <hr>
-      <label for="output">Output</label><br>
-      <div id="output"></div>
-      <textarea placeholder="No errors" readonly class="materialize-textarea" id="errors"></textarea>
-      <textarea placeholder="No warnings" readonly class="materialize-textarea" id="warnings"></textarea>
-      <div id="simulator3d"></div>
+        <div class="col-xl-6 col-lg-7 col-md-8 col-sm-9 inventories row">
+          <div class="col-sm-6">
+            <label for="start-inventory">Start Inventory</label>
+            <div id="start-inventory" class="turtle-inventory"></div>
+            <div class="input-field col s12">
+              <input placeholder="selected slot" id="selected-slot" readonly="readonly" type="number">
+              <label for="selected-slot">Selected Slot</label>
+            </div>
+            <div class="input-field col s12">
+              <input placeholder="fuel level" id="fuel-level" readonly="readonly" type="number">
+              <label for="fuel-level">Fuel Level</label>
+            </div>
+            <div class="input-field col s12">
+              <input placeholder="direction" id="direction" readonly="readonly" type="number">
+              <label for="direction">Direction</label>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <label for="live-inventory">Live Inventory</label>
+            <div id="live-inventory" class="turtle-inventory"></div>
+            <div class="input-field col s12">
+              <input placeholder="x" id="position-x" readonly="readonly" type="number">
+              <label for="position-x">X</label>
+            </div>
+            <div class="input-field col s12">
+              <input placeholder="y" id="position-y" readonly="readonly" type="number">
+              <label for="position-y">Y</label>
+            </div>
+            <div class="input-field col s12">
+              <input placeholder="z" id="position-z" readonly="readonly" type="number">
+              <label for="position-z">Z</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-5 col-md-4 col-sm-3">
+            <label for="simulator3d">Live 3D Simulator</label>
+            <div id="simulator3d"></div>
+        </div>
+      </div>  
     </main>
   </body>
 </html>

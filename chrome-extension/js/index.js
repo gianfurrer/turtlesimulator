@@ -188,6 +188,7 @@ let startInventory;
 let liveInventory;
 
 onload = () => {
+    $('.sidenav').sidenav();
     chunksElement = document.querySelector("#chunks");
     outputElement = document.querySelector("#output");
     errorOutputElement = document.querySelector("#error-output");

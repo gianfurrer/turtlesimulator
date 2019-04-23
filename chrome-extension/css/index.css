@@ -1,9 +1,15 @@
-html {
-    min-width: 800px;
-}
-
 body {
     padding-top: 3rem;
+}
+
+header, main, footer {
+    padding-left: 300px;
+}
+
+@media only screen and (max-width : 992px) {
+    header, main, footer {
+        padding-left: 0;
+    }
 }
 
 title {
@@ -16,19 +22,19 @@ textarea {
 }
 
 #input {
-    min-height: 300px;
+    min-height: 240px;
     overflow: auto;
-    resize: horizontal;
+    resize: vertical;
 }
 
 #output {
-    max-height: 300px;
+    height: 210px;
     overflow: auto;
 }
 
 .turtle-inventory {
     width: 216px;
-    margin: 20px;
+    margin: 5px;
 }
 
 .inventory-slot {
@@ -47,15 +53,15 @@ textarea {
 
 .inventory-slot-count {
     font-family: monospace;
-    font-size: 18px;
-    height: 22px;
-    width: 20px;
+    font-size: 18px !important;
+    height: 22px !important;
+    width: 20px !important;
     text-align: right;
-    outline: none;
-    padding: 0;
-    margin-left: auto;
+    outline: none !important;
+    padding: 0 !important;
+    margin: -10px 0 0 auto !important;
     background: transparent;
-    border: none;
+    border: none !important;
     color: white;
     display: block;
 }
