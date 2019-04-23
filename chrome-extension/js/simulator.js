@@ -32,38 +32,45 @@ class Simulator {
         this.timeoutElement = document.querySelector("#timeout");
         this.stateSlider = document.querySelector("#state");
         this.stateSlider.value = this.stateSlider.max = 0;
+        this.isPlaying = false
         
         stateElement.onmouseup = e => this.applyState(e.target.value);
         playElement.onclick = this.play
+
+        this.updateCompileStatus("Compiling...");
+        stateElement.disabled = true;
 
         this.luaWorker = new Worker("js/lua-worker.js");
         this.luaWorker.onmessage = e => {
             const actionElement = document.createElement("div");
             actionElement.innerText = e.data;
             output.appendChild(actionElement);
-            this.executeAction(actionElement);
+            this.addAction(actionElement);
         };
         this.luaWorker.postMessage(program);
-        this.simulator3d.freeze(true);
 
         //Init Save
         this.saveState();
     }
 
-    executeAction = actionElement => {
+    updateCompileStatus = status => {
+        compileStatusElement.textContent = status;
+    }
+
+    addAction = actionElement => {
         const components = actionElement.innerText.split(" ");
         if (!this.funcNameToFuncDict[components[1]]) {
             return;
         }
         const func = this.funcNameToFuncDict[components[1]].func;
         const args = components.slice(2);
-        func(...args);
+        stateElement.max++;
         this.actions.push({func: func, args: args});
-        stateElement.value = ++stateElement.max;
-        if (!(this.actions.length % this.saveStateAt)) {
-            this.saveState();
+        if (func.name == "end") {
+            this.updateCompileStatus("Compiling finished");
+            this.play(true);
         }
-    };
+    }
 
     saveState = () => {
         this.states.push({
@@ -106,7 +113,8 @@ class Simulator {
         }
     }
 
-    play = () => {
+    play = (firstRun=false) => {
+        this.isPlaying = true;
         const timeout = this.timeoutElement.value;
         let i = stateElement.value;
         this.applyState(i);
@@ -115,13 +123,20 @@ class Simulator {
                 let nextAction = undefined;
                 do {
                     const action = this.actions[i++];
+                    if (firstRun && !(this.actions.indexOf(action) % this.saveStateAt)) {
+                        this.saveState();
+                    }
                     action.func(...action.args);
                     stateElement.value = i;
-                    nextAction = this.funcNameToFuncDict["["+this.actions[i].func.name+"]"]
+                    nextAction = i < this.actions.length ? this.funcNameToFuncDict["["+this.actions[i].func.name+"]"] : undefined;
                 } while(i < this.actions.length && nextAction && nextAction.timeout);
             } else {
                 clearInterval(this.currentPlayId);
+                this.isPlaying = false;
                 this.currentPlayId = undefined
+                if (firstRun) {
+                    stateElement.disabled = false;
+                }
             }
         }, timeout);
     };
@@ -195,7 +210,6 @@ class Simulator {
     end = () => {
         clearInterval(this.intervalId);
         this.luaWorker.terminate();
-        this.simulator3d.freeze(false);
     };
 
     funcNameToFuncDict = {

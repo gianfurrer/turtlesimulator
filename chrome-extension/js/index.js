@@ -168,6 +168,7 @@ function initInventory(inventory, values) {
     }
 }
 
+let compileStatusElement;
 let chunksElement;
 let outputElement;
 let errorOutputElement;
@@ -189,6 +190,7 @@ let liveInventory;
 
 onload = () => {
     $('.sidenav').sidenav();
+    compileStatusElement = document.querySelector("#compile-status");
     chunksElement = document.querySelector("#chunks");
     outputElement = document.querySelector("#output");
     errorOutputElement = document.querySelector("#error-output");

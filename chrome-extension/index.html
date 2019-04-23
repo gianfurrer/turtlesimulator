@@ -59,8 +59,11 @@
     <main>
       <div class="row px-2 mb-1 mt-3">
         <div class="col-md-6">
-          <label for="input">Input</label><br>
-          <textarea class="materialize-textarea" id="input">turtle.refuel()</textarea>
+          <div class="input-field">
+            <label for="input">Input</label><br>
+            <textarea class="materialize-textarea" id="input">turtle.refuel()</textarea>
+            <span class="helper-text" id="compile-status" data-error="wrong" data-success="right"></span>
+          </div>
           <div class="row">
             <div class="input-field col-sm-6 col-xl-3 px-1">
                 <input id="height" type="number" value="12">
@@ -70,12 +73,12 @@
                 <input placeholder="chunks" id="chunks" type="text">
                 <label for="chunks">Chunks</label>
               </div>
-            <div class="input-field col-sm-8 col-xl-4 px-1">
+            <div class="input-field col-sm-6 col-xl-3 px-1">
               <input placeholder="args" id="args" type="text">
               <label for="args">Args</label>
             </div>
-            <div class="col-sm-4 col-lg-3 my-3 center-align">
-                <button class="btn" id="btn-execute">Execute</button>
+            <div class="col-sm-6 col-lg-4 my-3 center-align">
+                <button class="btn" id="btn-execute">Compile & Play</button>
             </div>
           </div>
         </div>
