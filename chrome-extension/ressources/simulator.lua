@@ -153,15 +153,33 @@ turtle.place = function () return placeBase(turtle.detect, getCoordinatesInFront
 turtle.placeUp = function () return placeBase(turtle.detectUp, getCoordinatesAbove) end
 turtle.placeDown = function () return placeBase(turtle.detectDown, getCoordinatesBeneath) end
 
-turtle.drop = function (count)
-    removeItemFromInventory(count)
+
+function dropBase(count, getCoordinatesFunction)
+    local quantity, name = removeItemFromInventory(count)
+    local x, y, z = getCoordinatesFunction()
+    addDroppedItem(name, quantity, x, y, z)
     return true
 end
+turtle.drop = function (count)
+    return dropBase(count, getCoordinatesInFront)
+end
 turtle.dropUp = function (count)
-    return turtle.drop(count)
+    return dropBase(count, getCoordinatesAbove)
 end
 turtle.dropDown = function (count)
-    return turtle.drop(count)
+    return dropBase(count, getCoordinatesBeneath)
+end
+
+function addDroppedItem(name, quantity, x, y, z)
+    inserted = false
+    for i=1,#droppedItems do
+        local droppedItem = droppedItems[i]
+        if droppedItem.name == name and droppedItem.x == x and droppedItem.y == y and droppedItem.z == z then
+            droppedItem.quantity = droppedItem.quantity + quantity
+            inserted = true;
+        end
+    end
+    table.insert(droppedItems, { name = name, quantity = quantity, x = x, y = y, z = z })
 end
 
 function addBlock(name, x, y, z)
@@ -190,7 +208,7 @@ end
 function addItemToInventory(name)
     local item = tableFirstOrNil(items, function (i) return i.value == name end)
     local freeSlot = -1
-    for i = 1, 16 do
+    for i = 1, slotCount do
         if inventory[i].count < item.stackSize and inventory[i].name == name then
             inventory[i].count = inventory[i].count + 1
             printOutput({ "[addItemToInventory]", name, i })
@@ -209,12 +227,14 @@ end
 
 function removeItemFromInventory(quantity)
     quantity = quantity or turtle.getItemCount()
+    local name = turtle.getItemDetail().name
     if quantity > turtle.getItemCount() then quantity = turtle.getItemCount() end
     inventory[selectedSlot].count = inventory[selectedSlot].count - quantity
     if inventory[selectedSlot].count < 1 then
         inventory[selectedSlot].name = ""
     end
     printOutput({ "[removeItemFromInventory]", quantity })
+    return quantity, name
 end
 
 function printOutput(components)

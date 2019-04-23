@@ -60,7 +60,9 @@ function getInventoryCode(inventory) {
     let inventoryCode = "inventory = {\n";
     for (let i = 0; i < inventory.length; i++) {
         const slot = inventory[i];
-        inventoryCode += `{ name = "${slot.nameElement.value}", count = ${slot.countElement.value} },\n`;
+        inventoryCode += `{ name = "${slot.nameElement.value}", count = ${
+            slot.countElement.value
+        } },\n`;
     }
     inventoryCode += "}\n";
     return inventoryCode;
@@ -69,17 +71,23 @@ function getInventoryCode(inventory) {
 function getBlocksCode(blocks) {
     let luaCode = "blocks = {\n";
     blocks.forEach(block => {
-        luaCode += `{ name = "${block.name}", x = ${block.x}, y = ${block.y}, z = ${block.z} },\n`
+        luaCode += `{ name = "${block.name}", x = ${block.x}, y = ${
+            block.y
+        }, z = ${block.z} },\n`;
     });
     luaCode += "}\n";
     return luaCode;
 }
 
 function getItemsCode(items) {
-    let luaCode = "items = {\n"
+    let luaCode = "items = {\n";
     items.forEach(item => {
-        luaCode += `{ value = "${item.value}", stackSize = ${item.stackSize}, drops = "${item.drops}", minDropCount = ${item.minDropCount}, maxDropCount = ${item.maxDropCount} },\n`
-    })
+        luaCode += `{ value = "${item.value}", stackSize = ${
+            item.stackSize
+        }, drops = "${item.drops}", minDropCount = ${
+            item.minDropCount
+        }, maxDropCount = ${item.maxDropCount} },\n`;
+    });
     luaCode += "}\n";
     return luaCode;
 }
@@ -96,7 +104,7 @@ function getFileContent(fileName, callback) {
 }
 
 async function executeProgram() {
-    const blocks = generateMap(chunksElement.value)
+    const blocks = generateMap(chunksElement.value);
     const args = getArgs();
     const program = getProgram(args, blocks);
     window.simulator = new Simulator(program, blocks);
@@ -120,21 +128,21 @@ function generateInventory(inventoryElement, slots) {
         slot.countElement.classList.add("inventory-slot-count");
         slot.countElement.type = "number";
         slot.countElement.min = 0;
-        slot.countElement.maxLength = "2"
+        slot.countElement.maxLength = "2";
         slot.countElement.value = "0";
 
         slot.countElement.onchange = slot.countElement.onkeyup = () => {
-            const item = items.find(i => i.value == slot.nameElement.value)
+            const item = items.find(i => i.value == slot.nameElement.value);
             if (item && slot.countElement.value > item.stackSize) {
                 slot.countElement.value = item.stackSize;
             }
-        }
-        
+        };
+
         slot.appendChild(slot.imageElement);
         slot.appendChild(slot.nameElement);
         slot.appendChild(slot.countElement);
-        slot.imageElement.onclick = () => { 
-            itemModal.onItemClicked = (item) => {
+        slot.imageElement.onclick = () => {
+            itemModal.onItemClicked = item => {
                 slot.nameElement.value = item.value;
                 slot.imageElement.style.background = item.backgroundCss;
                 if (slot.countElement.value == "0") {
@@ -142,15 +150,15 @@ function generateInventory(inventoryElement, slots) {
                 }
                 slot.countElement.onchange();
                 itemModal.close();
-            }
+            };
             itemModal.onClear = () => {
                 slot.nameElement.value = "";
                 slot.imageElement.style.background = "";
                 slot.countElement.value = "0";
                 itemModal.close();
-            }
+            };
 
-            itemModal.open()
+            itemModal.open();
         };
         inventoryElement.appendChild(slot);
         inventory.push(slot);
@@ -164,7 +172,9 @@ function initInventory(inventory, values) {
         inventory[i].nameElement.value = name;
         inventory[i].countElement.value = values[i].count;
         const item = items.find(i => i.value === name);
-        inventory[i].imageElement.style.background = item ? item.backgroundCss : "";
+        inventory[i].imageElement.style.background = item
+            ? item.backgroundCss
+            : "";
     }
 }
 
@@ -188,7 +198,7 @@ let startInventory;
 let liveInventory;
 
 onload = () => {
-    $('.sidenav').sidenav();
+    $(".sidenav").sidenav();
     chunksElement = document.querySelector("#chunks");
     outputElement = document.querySelector("#output");
     errorOutputElement = document.querySelector("#error-output");
@@ -223,18 +233,18 @@ onload = () => {
         { name: "minecraft:stone", count: 64 },
         { name: "minecraft:stone", count: 64 }
     ]);
-    
 };
 
 onerror = e => {
     if (e.startsWith('[string "..."]') || e.startsWith("uncaught exception")) {
-        document.querySelector("#errors").textContent += "\n" + e
-            .split(":")
-            .splice(2)
-            .join(":")
-            .trim();
-    }
-    else if (e.startsWith("[LUA ERROR]")) {
+        document.querySelector("#errors").textContent +=
+            "\n" +
+            e
+                .split(":")
+                .splice(2)
+                .join(":")
+                .trim();
+    } else if (e.startsWith("[LUA ERROR]")) {
         document.querySelector("#errors").textContent += "\n" + e;
     }
 };
