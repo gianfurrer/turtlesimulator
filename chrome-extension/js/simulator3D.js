@@ -65,7 +65,6 @@ function Simulator3D(domWrapper) {
 		alphavalue.step = "0.1";
 		alphavalue.className = "alphavalue";
 		alphavalue.onchange = () => {
-			this.Controls.noPan = true,
 			this.initCanvas(this.map);
 		}
 		alphavalue.onfocusout = () => { this.Controls.noPan = true; }
@@ -98,16 +97,18 @@ function Simulator3D(domWrapper) {
 
 	//Functions
 	this.initCanvas = (map = []) => {
-			this.map = [];
-			this.Scene.remove(this.object),
-			this.object = new THREE.Object3D;
-			for (let c = 0; c < map.length; ++c) {
-				this.addBlock(map[c], false);
-			}
-			this.Scene.add(this.object);
-			this.Camera.lookAt(this.object.position);
-			this.setStandard();
-			this.setRendering(true, 1);
+		this.Controls.noPan = true;
+		this.map = [];
+		this.Scene.remove(this.object),
+		this.object = new THREE.Object3D;
+		for (let c = 0; c < map.length; ++c) {
+			this.addBlock(map[c], false);
+		}
+		this.Scene.add(this.object);
+		this.Camera.lookAt(this.object.position);
+		this.setStandard();
+		this.setRendering(true, 1);
+		this.Controls.noPan = false;
 	}
 	this.removeBlock = (coord) => {
 		const coordString = JSON.stringify(coord);

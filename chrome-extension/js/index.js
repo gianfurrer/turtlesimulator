@@ -194,6 +194,7 @@ let directionElement;
 
 let stateElement;
 let playElement;
+let stopElement;
 
 let startInventory;
 let liveInventory;
@@ -214,6 +215,7 @@ onload = () => {
     positionZElement = document.querySelector("#position-z");
     directionElement = document.querySelector("#direction");
     playElement = document.querySelector("#play");
+    stopElement = document.querySelector("#stop");
     stateElement = document.querySelector("#state");
     document.querySelector("#btn-execute").onclick = executeProgram;
     startInventory = generateInventory(startInventoryElement, 16);

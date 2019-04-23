@@ -35,7 +35,10 @@ class Simulator {
         this.isPlaying = false
         
         stateElement.onmouseup = e => this.applyState(e.target.value);
-        playElement.onclick = this.play
+        playElement.onclick = this.play;
+        playElement.disabled = false;
+        stopElement.onclick = this.stop;
+        stopElement.disabled = true;
 
         this.updateCompileStatus("Compiling...");
         stateElement.disabled = true;
@@ -115,6 +118,9 @@ class Simulator {
 
     play = (firstRun=false) => {
         this.isPlaying = true;
+        if (!firstRun) {
+            stopElement.disabled = false;
+        }
         const timeout = this.timeoutElement.value;
         let i = stateElement.value;
         this.applyState(i);
@@ -140,6 +146,13 @@ class Simulator {
             }
         }, timeout);
     };
+
+    stop = () => {
+        clearInterval(this.currentPlayId);
+        this.isPlaying = false;
+        this.currentPlayId = undefined
+        stopElement.disabled = true;
+    }
 
     setSelectedSlot = slot => {
         this.selectedSlot = slot;
