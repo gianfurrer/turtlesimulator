@@ -239,17 +239,3 @@ onload = () => {
     ]);
     
 };
-
-onerror = e => {
-    if (e.startsWith('[string "..."]') || e.startsWith("uncaught exception")) {
-        document.querySelector("#errors").textContent +=
-            "\n" +
-            e
-                .split(":")
-                .splice(2)
-                .join(":")
-                .trim();
-    } else if (e.startsWith("[LUA ERROR]")) {
-        document.querySelector("#errors").textContent += "\n" + e;
-    }
-};

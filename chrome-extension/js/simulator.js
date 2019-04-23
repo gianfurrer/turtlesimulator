@@ -35,7 +35,7 @@ class Simulator {
         this.isPlaying = false
         
         stateElement.onmouseup = e => this.applyState(e.target.value);
-        playElement.onclick = this.play;
+        playElement.onclick = () => { this.play(false) };
         playElement.disabled = false;
         stopElement.onclick = this.stop;
         stopElement.disabled = true;
@@ -110,15 +110,18 @@ class Simulator {
         this.turn(state.direction);
         stateElement.value = index;
         this.simulator3d.initCanvas(state.map); 
-        for (let i = stateIndex; i < index; ++i) {
+        for (let i = stateIndex*this.saveStateAt; i < index; ++i) {
             const action = this.actions[i];
             action.func(...action.args);
         }
     }
 
     play = (firstRun=false) => {
+        if (this.isPlaying && stopElement.disabled) {
+            firstRun = true;
+        }
         this.isPlaying = true;
-        firstRun!=true && (stopElement.disabled = false);
+        !firstRun && (stopElement.disabled = false);
         const timeout = this.timeoutElement.value;
         let i = stateElement.value;
         this.applyState(i);
@@ -192,7 +195,7 @@ class Simulator {
                     inventorySlot.countElement.value = parseInt(inventorySlot.countElement.value) + 1;
                 } 
                 else {
-                    console.error("[LUA ERROR] Max stack size exceeded");
+                    console.warn("[LUA ERROR] Max stack size exceeded");
                 }
             }
             else {
@@ -280,5 +283,28 @@ class Simulator {
     }
     get direction() {
         return parseInt(directionElement.value);
+    }
+}
+
+onerror = e => {
+    const prefix = "[LUA ERROR]";
+    if (e.startsWith('[string "..."]') || e.startsWith("uncaught exception")) {
+        document.querySelector("#errors").textContent +=
+            "\n" +
+            e
+                .split(":")
+                .splice(2)
+                .join(":")
+                .trim();
+    } else if (e.startsWith(prefix)) {
+        document.querySelector("#errors").textContent += e.replace(prefix, "") + "\n";
+    }
+};
+
+onwarn = e => {
+    console.log("WARNING")
+    const prefix = "[LUA WARNING]";
+    if (e.startsWith(prefix)) {
+        document.querySelector("#warnings").textContent += e.replace(prefix, "") + "\n";
     }
 }
