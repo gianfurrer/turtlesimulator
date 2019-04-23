@@ -118,9 +118,7 @@ class Simulator {
 
     play = (firstRun=false) => {
         this.isPlaying = true;
-        if (!firstRun) {
-            stopElement.disabled = false;
-        }
+        firstRun!=true && (stopElement.disabled = false);
         const timeout = this.timeoutElement.value;
         let i = stateElement.value;
         this.applyState(i);
