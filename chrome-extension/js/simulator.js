@@ -138,6 +138,7 @@ class Simulator {
                 clearInterval(this.currentPlayId);
                 this.isPlaying = false;
                 this.currentPlayId = undefined
+                stopElement.disabled = true;
                 if (firstRun) {
                     stateElement.disabled = false;
                 }
